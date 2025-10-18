@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
-import { onLoadingGeneralSlice, onSetCareerList, onSetErrorGeneralSlice, onSetEstablishmentList, onSetGeneralSlice, onSetPositionList, onSetSquadsList } from "../store/general/generalSlice";
+import { onLoadingGeneralSlice, onSetCareerList, onSetDegreesList, onSetErrorGeneralSlice, onSetEstablishmentList, onSetGeneralSlice, onSetPositionList, onSetSquadsList } from "../store/general/generalSlice";
 import ComboboxData from "../interfaces/ComboboxData";
 
 const apiUrl = Config.apiUrl;
@@ -9,6 +9,7 @@ const apiUrl = Config.apiUrl;
 export const useGeneralStore = () => {
     const { isLoadingGeneralSlice, instructorPositionsList,
         establishmentList, careerList, squadsList, positionList,
+        degreesList,
         errorMessage } = useSelector((state: RootState) => state.general);
 
     const dispatch = useDispatch<AppDispatch>();
@@ -159,6 +160,35 @@ export const useGeneralStore = () => {
         }
     }
 
+    const GetDegrees = async () => {
+        dispatch(onLoadingGeneralSlice());
+
+        try {
+            const response = await fetch(`${apiUrl}/GeneralMethods/get_degrees`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },// Se envía como JsonObject
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.ok) {
+                dispatch(onSetErrorGeneralSlice(data.message || "Error al obtener puestos"))
+                return;
+            }
+
+            const comboPosition: ComboboxData[] = data.list.map((item: any) => ({
+                id: item.graIdGrado,
+                value: item.graNombreGrado,
+            }));
+
+            dispatch(onSetDegreesList(comboPosition));
+        } catch (error) {
+            dispatch(onSetErrorGeneralSlice((error as Error).message))
+        }
+    }
+
     return {
         isLoadingGeneralSlice,
         instructorPositionsList,
@@ -166,13 +196,15 @@ export const useGeneralStore = () => {
         careerList,
         squadsList,
         positionList,
+        degreesList,
         errorMessage,
 
         GetInstructorPositions,
         GetEstablishment,
         GetCareer,
         GetSquads,
-        GetPosition
+        GetPosition,
+        GetDegrees
     }
 
 }

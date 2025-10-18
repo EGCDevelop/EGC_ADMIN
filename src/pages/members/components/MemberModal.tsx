@@ -6,119 +6,16 @@ import ComboboxData from "../../../interfaces/ComboboxData";
 import "../styles/member-modal.css";
 import { useForm } from "../../../hooks/useForm";
 import Member from "../../../interfaces/Member";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { QRComponent } from "../../components/QRComponent";
+import { useGeneralStore } from "../../../hooks/useGeneralStore";
+import { CustomLoader } from "../../components/CustomLoader";
+import Utils from "../../../utils/Utils";
 
 interface Props {
   onClose: () => void;
 }
 
-const establishmentData: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Enrique Gomez Carrillo",
-  },
-  {
-    id: 2,
-    value: "Romulo Gallego",
-  },
-  {
-    id: 3,
-    value: "Otro",
-  },
-];
-
-const careersData: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Basicos",
-  },
-  {
-    id: 2,
-    value: "Perito contador",
-  },
-  {
-    id: 3,
-    value: "Secretariado bilinguie",
-  },
-  {
-    id: 4,
-    value: "Secretariado oficinista",
-  },
-  {
-    id: 5,
-    value: "Otro",
-  },
-];
-
-const degrees: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Primero",
-  },
-  {
-    id: 2,
-    value: "Segundo",
-  },
-  {
-    id: 3,
-    value: "Tercero",
-  },
-  {
-    id: 4,
-    value: "Cuarto",
-  },
-  {
-    id: 5,
-    value: "Quinto",
-  },
-  {
-    id: 6,
-    value: "Sexto",
-  },
-  {
-    id: 7,
-    value: "Otro",
-  },
-];
-
-const squadData: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Gastadores",
-  },
-  {
-    id: 2,
-    value: "Batonistas",
-  },
-  {
-    id: 3,
-    value: "Marcadoras",
-  },
-  {
-    id: 4,
-    value: "Tamborines",
-  },
-  {
-    id: 5,
-    value: "Redoblantes",
-  },
-];
-
-const positionData: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Comandante",
-  },
-  {
-    id: 2,
-    value: "Subcomandante",
-  },
-  {
-    id: 3,
-    value: "Integrante",
-  },
-];
 
 const states: ComboboxData[] = [
   {
@@ -131,18 +28,11 @@ const states: ComboboxData[] = [
   },
 ];
 
-const isNewData: ComboboxData[] = [
-  {
-    id: 0,
-    value: "No",
-  },
-  {
-    id: 1,
-    value: "Si",
-  },
-];
 
 export const MemberModal = ({ onClose }: Props) => {
+  const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
+    positionList, degreesList, errorMessage, GetEstablishment, GetCareer, GetSquads,
+    GetPosition, GetDegrees } = useGeneralStore();
   const { formData, onChange, onSelectChange } = useForm<Member>({
     idIntegrante: 0,
     nombres: "",
@@ -157,8 +47,8 @@ export const MemberModal = ({ onClose }: Props) => {
     gradoNombre: "",
     seccion: "",
     idEscuadra: 0,
-    idPuesto: 0,
-    esNuevo: 1,
+    idPuesto: 8,
+    esNuevo: 3,
     usuario: "",
     estadoIntegrante: 1,
     nombreEncargado: "",
@@ -170,6 +60,14 @@ export const MemberModal = ({ onClose }: Props) => {
     useState<boolean>(false);
   const [showOtherCareer, setShowOtherCareer] = useState<boolean>(false);
   const [showOtherDegree, setShowOtherDegree] = useState<boolean>(false);
+
+  useEffect(() => {
+    GetEstablishment();
+    GetCareer();
+    GetSquads();
+    GetPosition();
+    GetDegrees();
+  }, []);
 
   const handleInsertOrUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -200,7 +98,7 @@ export const MemberModal = ({ onClose }: Props) => {
     if (formData.idCarrera === 0)
       newErrors.idCarrera = "Seleccione una carrera";
 
-    if (formData.idCarrera === 5 && !formData.carreraNombre?.trim())
+    if (formData.idCarrera === 6 && !formData.carreraNombre?.trim())
       newErrors.carreraNombre = "El nombre de la carrera es obligatoria";
 
     if (formData.idGrado === 0) newErrors.idGrado = "Seleccione un grado";
@@ -212,6 +110,14 @@ export const MemberModal = ({ onClose }: Props) => {
       newErrors.seccion = "La seccion es obligatoria";
     }
 
+    if (formData.idEscuadra === 0) {
+      newErrors.idEscuadra = "Seleccione una escuadra";
+    }
+
+    if (formData.idPuesto === 0) {
+      newErrors.idPuesto = "Seleccione un puesto";
+    }
+
     if (!formData.nombreEncargado.trim()) {
       newErrors.nombreEncargado = "El nombre del encargado es obligatorio";
     }
@@ -219,6 +125,7 @@ export const MemberModal = ({ onClose }: Props) => {
     if (!formData.telefonoEncargado.trim()) {
       newErrors.telefonoEncargado = "El teléfono del encargado es obligatorio";
     }
+
 
     setErrors(newErrors);
 
@@ -231,6 +138,9 @@ export const MemberModal = ({ onClose }: Props) => {
 
   return (
     <>
+      {
+        isLoadingGeneralSlice && <CustomLoader />
+      }
       <div className="container-main-member-modal">
         <div className="content-member-modal">
           <div className="content-header-member-modal">
@@ -247,8 +157,9 @@ export const MemberModal = ({ onClose }: Props) => {
               <div className="personal-info-member-modal">
                 <div className="qr-content-member-modal">
                   <span>Código QR</span>
-                  {/* <FaQrcode className="icon" /> */}
-                  <QRComponent data="100" />
+                  {
+                    formData.idIntegrante === 0 ? <FaQrcode className="icon" /> : <QRComponent data="100" />
+                  }
                 </div>
                 <div className="personal-inputs-member-modal">
                   <span>Información Personal</span>
@@ -302,14 +213,13 @@ export const MemberModal = ({ onClose }: Props) => {
                     <div className="inputs-grid">
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={establishmentData}
+                          dataList={establishmentList}
                           name="idEstablecimiento"
                           label="Establecimiento"
                           initValue
                           request
                           value={formData.idEstablecimiento}
                           onChange={(e) => {
-                            console.log(e.target.value);
                             onSelectChange(e);
                             setShowOtherEstablishment(
                               Number(e.target.value) === 3
@@ -333,7 +243,7 @@ export const MemberModal = ({ onClose }: Props) => {
 
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={careersData}
+                          dataList={careerList}
                           name="idCarrera"
                           label="Carrera"
                           initValue
@@ -341,7 +251,7 @@ export const MemberModal = ({ onClose }: Props) => {
                           value={formData.idCarrera}
                           onChange={(e) => {
                             onSelectChange(e);
-                            setShowOtherCareer(Number(e.target.value) === 5);
+                            setShowOtherCareer(Number(e.target.value) === 6);
                           }}
                           errorMessage={errors.idCarrera}
                         />
@@ -360,7 +270,7 @@ export const MemberModal = ({ onClose }: Props) => {
                       )}
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={degrees}
+                          dataList={degreesList}
                           name="idGrado"
                           label="Grado"
                           initValue
@@ -406,32 +316,35 @@ export const MemberModal = ({ onClose }: Props) => {
                     <div className="inputs-grid">
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={squadData}
+                          dataList={squadsList}
                           name="idEscuadra"
                           label="Escuadra"
                           initValue
                           request
                           onChange={onSelectChange}
                           value={formData.idEscuadra}
+                          errorMessage={errors.idEscuadra}
                         />
                       </div>
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={positionData}
+                          dataList={positionList}
                           name="idPuesto"
                           label="Puesto"
                           initValue
                           request
                           onChange={onSelectChange}
                           value={formData.idPuesto}
+                          errorMessage={errors.idPuesto}
                         />
                       </div>
                       <div className="container-input-member-modal">
                         <CustomSelect
-                          dataList={isNewData}
+                          dataList={Utils.stateDataList()}
                           name="esNuevo"
                           label="¿Es nuevo integrante?"
                           request
+                          disabled={formData.idIntegrante === 0}
                           onChange={onSelectChange}
                           value={formData.esNuevo}
                         />
@@ -440,7 +353,7 @@ export const MemberModal = ({ onClose }: Props) => {
                         <CustomInput
                           name="usuario"
                           label="Usuario"
-                          disabled
+                          disabled={formData.idIntegrante === 0}
                           value={formData.usuario!}
                           onChange={onChange}
                         />
@@ -451,7 +364,7 @@ export const MemberModal = ({ onClose }: Props) => {
                           name="estadoIntegrante"
                           label="Estado"
                           request
-                          disabled
+                          disabled={formData.idIntegrante === 0}
                           onChange={onSelectChange}
                           value={formData.estadoIntegrante}
                         />

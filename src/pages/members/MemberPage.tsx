@@ -94,10 +94,11 @@ export const MemberPage = () => {
   }, []);
 
   useEffect(() => {
-    if (errorMessage) {
+    if (errorMessage || errorMemberSliceMessage) {
+      const validateMessage = errorMessage ? errorMessage : errorMemberSliceMessage;
       setAlert({
         title: "Error",
-        message: errorMessage,
+        message: validateMessage!,
         status: "error"
       })
     }

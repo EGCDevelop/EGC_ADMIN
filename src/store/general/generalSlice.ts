@@ -8,6 +8,7 @@ interface GeneralSlice {
     careerList: ComboboxData[];
     squadsList: ComboboxData[];
     positionList: ComboboxData[];
+    degreesList: ComboboxData[];
     errorMessage?: string;
 }
 
@@ -18,6 +19,7 @@ const initialState: GeneralSlice = {
     careerList: [],
     squadsList: [],
     positionList: [],
+    degreesList: [],
     errorMessage: undefined
 }
 
@@ -61,6 +63,12 @@ export const generalSlice = createSlice({
             state.errorMessage = undefined
         },
 
+        onSetDegreesList: (state, action: PayloadAction<ComboboxData[]>) => {
+            state.isLoadingGeneralSlice = false;
+            state.degreesList = action.payload;
+            state.errorMessage = undefined
+        },
+
         onSetErrorGeneralSlice: (state, action: PayloadAction<string>) => {
             state.isLoadingGeneralSlice = false;
             state.instructorPositionsList = [];
@@ -76,5 +84,6 @@ export const {
     onSetErrorGeneralSlice,
     onSetCareerList,
     onSetSquadsList,
+    onSetDegreesList,
     onSetPositionList } = generalSlice.actions;
 export default generalSlice.reducer;
