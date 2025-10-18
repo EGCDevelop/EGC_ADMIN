@@ -1,0 +1,116 @@
+.container-main-cancel-member-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.content-cancel-member-modal {
+  background-color: #fff;
+  padding: 1rem;
+  width: 90%;
+  max-width: 550px;
+  height: 90%;
+  max-height: 450px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+}
+
+/* Encabezado (icono, título, texto) siempre fijo arriba */
+.content-cancel-member-modal .header-cancel-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+/* El formulario ocupa el espacio disponible y tiene scroll si crece */
+.form-cancel-member-modal {
+  overflow-y: auto; /* ✅ solo aquí el scroll */
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.header-cancel-modal > .icon {
+  background-color: #ffe2e2;
+  color: #e7000b;
+  width: 55px;
+  height: 55px;
+  padding: 13px;
+  border-radius: 100px;
+}
+
+.header-cancel-modal > strong {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  margin: auto;
+}
+
+.header-cancel-modal > p {
+  text-align: center;
+  color: #6e6e6e;
+}
+
+.content-comment-cancel-modal {
+  display: flex;
+}
+
+.container-buttons-cancel-member-modal {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 12px 0;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.container-buttons-cancel-member-modal > button {
+  padding: 11px;
+  color: #fff;
+  border-radius: 9px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.container-buttons-cancel-member-modal > button:nth-child(1) {
+  border: 1px solid #dcdcdc;
+  color: #000000;
+}
+
+.container-buttons-cancel-member-modal > button:nth-child(1):hover {
+  background-color: #f1efef;
+}
+
+.container-buttons-cancel-member-modal > button:nth-child(2) {
+  background-color: #e7000b;
+}
+
+.container-buttons-cancel-member-modal > button:nth-child(2):hover {
+  background-color: #c4020b;
+}
+
+@media screen and (min-width: 1024px) {
+  .content-cancel-member-modal {
+    justify-content: space-around;
+    gap: 1rem;
+  }
+
+  .container-buttons-cancel-member-modal {
+    flex-direction: row;
+  }
+
+  .container-buttons-cancel-member-modal {
+    justify-content: flex-end;
+  }
+
+  .container-buttons-cancel-member-modal > button {
+    padding: 10px 1.2rem;
+  }
+}

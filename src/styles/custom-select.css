@@ -1,0 +1,183 @@
+.container-custom-select {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.container-custom-select>label {
+  font-weight: 500;
+  font-size: clamp(13.3px, 2.7vw, 0.85rem);
+}
+
+/* ====== DROPDOWN PRINCIPAL ====== */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ====== BOTÓN PRINCIPAL / INPUT ====== */
+.dropdown-toggle {
+  padding: 11px 12px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #f9fafb;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0px 0px 1px 0px #e2e2e2;
+  transition: all 0.2s ease-in-out;
+}
+
+.dropdown-toggle:hover {
+  background-color: #ffffff;
+  border-color: #c1c1c1;
+}
+
+.dropdown-toggle.focused {
+  border: 1px solid #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+
+/* Input para escribir dentro del combobox */
+.dropdown-toggle.search-mode input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  cursor: pointer;
+}
+
+/* Icono de flecha */
+.dropdown-toggle .icon {
+  position: absolute;
+  right: 12px;
+  color: #555;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-toggle .icon.open {
+  transform: rotate(180deg);
+}
+
+/* ====== LISTA DESPLEGABLE ====== */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: dropdownFadeIn 0.15s ease-in-out;
+}
+
+/* Animación suave al abrir */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Opciones individuales */
+.option {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+/* Opción resaltada con teclado */
+.option.highlighted {
+  background-color: #c8ddff;
+  font-weight: 600;
+}
+
+.option:hover {
+  background-color: #e7f1ff;
+  /* azul leve */
+}
+
+.option.selected {
+  background-color: #d0e6ff;
+  /* azul más fuerte */
+  font-weight: 600;
+}
+
+/* Estado: sin resultados */
+.no-results {
+  padding: 10px 12px;
+  color: #999;
+  font-style: italic;
+}
+
+/* ====== ESTADO DE ERROR ====== */
+.custom-dropdown.has-error .dropdown-toggle {
+  border: 1px solid #d93025;
+  color: #d93025;
+}
+
+.custom-select-error {
+  color: #d93025;
+  font-size: 0.8rem;
+  margin-top: 2px;
+  margin-left: 4px;
+  display: block;
+}
+
+/* ====== SCROLLBAR PERSONALIZADO ====== */
+.dropdown-menu::-webkit-scrollbar {
+  width: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: #c9c9c9;
+  border-radius: 5px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: #a6a6a6;
+}
+
+/* ====== ACCESIBILIDAD ====== */
+.dropdown-toggle input::placeholder {
+  color: #777;
+  font-weight: 400;
+}
+
+.dropdown-toggle input:disabled {
+  background-color: #f1f1f1;
+  color: #777;
+}
+
+/* ====== RESPONSIVE ====== */
+@media screen and (max-width: 480px) {
+  .dropdown-toggle.search-mode input {
+    font-size: 13px;
+  }
+
+  .option {
+    font-size: 13px;
+  }
+}

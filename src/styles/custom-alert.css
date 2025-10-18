@@ -1,0 +1,49 @@
+.container-custom-alert {
+    width: 90%;
+    max-width: 400px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    position: fixed;
+    left: auto;
+    right: 20px;
+    z-index: 1500;
+}
+
+.container-custom-alert>.icon {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    border: 2px solid #bff9d3;
+    color: #32634a;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border: 2px solid #fecaca;
+    color: #7f1d1d;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border: 2px solid #fde68a;
+    color: #92400e;
+}
+
+.alert-info {
+    background-color: #eff6ff;
+    border: 2px solid #bfdbfe;
+    color: #1e3a8a;
+}
+
+@media screen and (min-width: 1024px) {
+    .container-custom-alert {
+        right: 30px;
+    }
+}

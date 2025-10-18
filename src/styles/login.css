@@ -1,0 +1,312 @@
+.container-main-logo {
+  background-color: #000;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.container-main-logo > img {
+  width: 100%;
+  height: 50%;
+  object-fit: contain;
+  position: absolute;
+}
+
+.login-glass {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  inset: 0;
+}
+
+.container-login {
+  width: 100%;
+  max-width: 1250px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  z-index: 1;
+}
+
+.login-side {
+  padding: 0.6rem 1rem;
+}
+
+.login-side:nth-child(1) {
+  display: none;
+}
+
+.login-side > form {
+  background-color: rgba(30, 30, 30, 0.99);
+  border-radius: 15px;
+  border: 1px solid #ffffffcc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.2rem 0;
+  -webkit-animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1)
+    both;
+  animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+.login-icon {
+  background-color: #4a4a4a;
+  padding: 1.3rem;
+  border-radius: 15px;
+  color: #fff;
+  font-size: 2.2rem;
+  display: flex;
+  box-shadow: 0 0 4px 1px #fff;
+}
+
+.login-side > form > span {
+  letter-spacing: 1px;
+  color: #fff;
+  font-weight: bold;
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+}
+
+.form-login-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 90%;
+}
+
+.form-login-content > label {
+  color: #fff;
+}
+
+/* Estilos para los input */
+.login_custom_input {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+}
+
+.login_input {
+  font-size: 18px;
+  padding: 13px 12px;
+  width: 100%;
+  padding-left: 46px;
+  outline: none;
+  background: #3e3e3e;
+  color: #ffffff;
+  border: 1px solid #5b5c5c;
+  border-radius: 15px;
+  box-shadow: 0px 0px 3px 0px #e2e2e2;
+  transition: 0.3s ease;
+}
+
+.login_input:focus {
+  background: #3e3e3e;
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+}
+
+.login_input::placeholder {
+  color: #dddddd;
+}
+
+.svg_icon {
+  position: absolute;
+  left: 15px;
+  fill: #ffffff;
+  width: 18px;
+  height: 18px;
+}
+
+.form-login-content-check {
+  width: 90%;
+  display: flex;
+  gap: 8px;
+  color: #fff;
+  justify-content: left;
+  font-size: 12px;
+}
+
+/* Estilos para el button */
+
+.login-side > form > button {
+  width: 90%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: clamp(1.05rem, 2.2vw, 1.15rem);
+  cursor: pointer;
+  scale: 1;
+  transition: scale 0.2s ease-in-out;
+}
+
+.login-side > form > button:hover {
+  scale: 1.02;
+}
+
+.icon-login-button {
+  width: 25px;
+  margin-left: 0;
+  transition: margin-left 0.2s ease-in-out;
+}
+
+.login-side > form > button:hover .icon-login-button {
+  margin-left: 10px;
+}
+
+.login-divider {
+  background-color: rgba(255, 255, 255, 1);
+  height: 1px;
+  width: 90%;
+}
+
+.login-description {
+  color: #fff;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+}
+
+@media (orientation: landscape) and (max-width: 1023px) {
+  .container-login {
+    max-width: 600px; /* menos restrictivo en landscape */
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container-main-logo > img {
+    width: 87%;
+    height: 87%;
+    max-height: 785px;
+    object-fit: contain;
+    -webkit-animation: opacityAnimation 0.5s cubic-bezier(0.39, 0.575, 0.565, 1)
+      both;
+    animation: opacityAnimation 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  }
+
+  .login-glass {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .container-login {
+    flex-direction: row;
+    gap: 1.5rem;
+    height: 77vh;
+    max-height: 800px;
+  }
+
+  .login-side {
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-side:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    position: relative;
+    -webkit-animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1)
+      both;
+    animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  }
+
+  .login-circle:nth-child(1) {
+    box-shadow: 0 0 2px 0 #bdbdbd;
+    position: absolute;
+    padding: 11rem;
+    border-radius: 50%;
+  }
+
+  @keyframes animationLoginCircle {
+    0% {
+      top: -9%;
+    }
+    50% {
+      top: -10%;
+    }
+    100% {
+      top: -9%;
+    }
+  }
+
+  .login-side-content {
+    width: 70%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .login-circle-animate {
+    position: absolute;
+    left: 40%;
+    box-shadow: 0 0 5px 0 #bdbdbd;
+    background-color: #bdbdbd;
+    padding: 3px;
+    border-radius: 50%;
+    -webkit-animation: animationLoginCircle 1.6s ease-out infinite;
+    animation: animationLoginCircle 1.6s ease-out infinite;
+  }
+
+  .login-side-content > figure {
+    background-color: #0d0d0d;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 0 #bdbdbd;
+    display: flex;
+    justify-content: center;
+    height: 215px;
+    width: 215px;
+    padding: 1rem;
+  }
+
+  .login-side-content > figure > img {
+    width: 100%;
+  }
+
+  .login-side-content > h1 {
+    font-size: 4.5rem;
+  }
+
+  .login-side-content > span {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .login-side-content > span::after,
+  .login-side-content > span::before {
+    content: "";
+    height: 2px;
+    background-color: #fff;
+    width: 20%;
+  }
+
+  .login-side-content > p {
+    font-size: 1.1rem;
+    color: #bdbdbd;
+  }
+
+  .login-side > form {
+    background-color: rgba(30, 30, 30, 0.98);
+    width: 85%;
+    padding: 3.5rem 0;
+    margin: auto;
+    height: 100%;
+    -webkit-animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1)
+      0.15s both;
+    animation: opacityAnimation 1s cubic-bezier(0.39, 0.575, 0.565, 1) 0.15s
+      both;
+  }
+}
