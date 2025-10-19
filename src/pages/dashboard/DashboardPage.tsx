@@ -1,29 +1,102 @@
 import { FaFilter } from "react-icons/fa";
-import ComboboxData from "../../interfaces/ComboboxData";
 import { CustomSelect } from "../components/CustomSelect";
-import "./styles/dashboard-page.css";
 import { Chartbar } from "./components/Chartbar";
 import { ChartPie } from "./components/ChartPie";
 import { FaCalendar, FaChartPie } from "react-icons/fa6";
+import { useGeneralStore } from "../../hooks/useGeneralStore";
+import { useForm } from "../../hooks/useForm";
+import { useEffect, useState } from "react";
+import { CustomLoader } from "../components/CustomLoader";
+import { CustomAlert } from "../components/CustomAlert";
+import { useMemberStore } from "../../hooks/useMemberStore";
+import "./styles/dashboard-page.css";
 
-const establishmentData: ComboboxData[] = [
-  {
-    id: 1,
-    value: "Enrique Gomez Carrillo",
-  },
-  {
-    id: 2,
-    value: "Romulo Gallego",
-  },
-  {
-    id: 3,
-    value: "Otro",
-  },
-];
+interface DataFilter {
+  idEstablishment: number;
+  idCareer: number;
+  idSquad: number;
+}
 
 export const DashboardPage = () => {
+  const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList, GetMemberForInstructor } = useMemberStore();
+  const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
+    errorMessage, GetEstablishment, GetCareer, GetSquads } = useGeneralStore();
+
+  const { formData, onSelectChange } = useForm<DataFilter>({
+    idEstablishment: 0,
+    idCareer: 0,
+    idSquad: 0
+  });
+
+  const [alert, setAlert] = useState<{
+    title: string;
+    message: string;
+    status: "success" | "error";
+  } | null>(null);
+
+  const totalNewMembers = memberDataList.filter((member) => member.intEsNuevo === 1).length;
+  const totalOldMembers = memberDataList.filter((member) => member.intEsNuevo === 0).length;
+  const countBySquad: Record<number, number> = {};
+
+  memberDataList.forEach((m) => {
+    const id = m.intescIdEscuadra;
+    countBySquad[id] = (countBySquad[id] || 0) + 1;
+  });
+  const titlesData = squadsList.map((s) => String(s.value));
+  const amountData = squadsList.map((s) => countBySquad[s.id] || 0);
+
+
+  useEffect(() => {
+    GetEstablishment();
+    GetCareer();
+    GetSquads();
+  }, []);
+
+  useEffect(() => {
+    GetMemberForInstructor(
+      "",
+      formData.idSquad,
+      formData.idEstablishment,
+      2,
+      1,
+      formData.idCareer
+    )
+  }, [formData.idEstablishment, formData.idCareer, formData.idSquad])
+
+  useEffect(() => {
+    if (errorMessage) {
+      setAlert({
+        title: "Error",
+        message: errorMessage,
+        status: "error"
+      })
+    }
+  }, [errorMessage])
+
+  useEffect(() => {
+    if (errorMemberSliceMessage) {
+      setAlert({
+        title: "Error",
+        message: errorMemberSliceMessage,
+        status: "error"
+      })
+    }
+  }, [errorMemberSliceMessage])
+
+
   return (
     <>
+      {
+        (isLoadingGeneralSlice || isLoadingMemberSlice) && <CustomLoader />
+      }
+      {
+        alert && <CustomAlert
+          title={alert.title}
+          message={alert.message}
+          status={alert.status}
+          onClose={() => setAlert(null)}
+        />
+      }
       <div className="dashboard-page-main-content">
         <div className="dashboard-page-header">
           <div className="dashboard-page-header-content">
@@ -33,7 +106,7 @@ export const DashboardPage = () => {
 
           <div className="dashboard-page-header-content">
             <div className="dashboard-page-general-acount">
-              <span>15</span>
+              <span>{memberDataList.length}</span>
               <p>Total de integrantes</p>
             </div>
           </div>
@@ -45,22 +118,28 @@ export const DashboardPage = () => {
           </strong>
           <div className="dashboard-page-combobox-filter">
             <CustomSelect
-              dataList={establishmentData}
-              name="establecimiento"
+              dataList={establishmentList}
+              name="idEstablishment"
               initValue
               label="Establecimiento"
+              value={formData.idEstablishment}
+              onChange={onSelectChange}
             />
             <CustomSelect
-              dataList={establishmentData}
-              name="establecimiento"
+              dataList={careerList}
+              name="idCareer"
               initValue
               label="Carrera"
+              value={formData.idCareer}
+              onChange={onSelectChange}
             />
             <CustomSelect
-              dataList={establishmentData}
-              name="establecimiento"
+              dataList={squadsList}
+              name="idSquad"
               initValue
               label="Escuadra"
+              value={formData.idSquad}
+              onChange={onSelectChange}
             />
           </div>
         </div>
@@ -73,28 +152,18 @@ export const DashboardPage = () => {
             <div className="dashboard-page-chart-bar-content">
               <span>Integrantes</span>
               <Chartbar
-                titlesData={[
-                  "Gastadores",
-                  "Batonistas",
-                  "Vientos",
-                  "Liras/Xilofonos",
-                  "Marcadoras",
-                  "Tamborines",
-                  "Redoblantes",
-                  "Bombines",
-                  "Bombos",
-                ]}
-                amountData={[20, 20, 40, 25, 11, 21, 40, 30, 30]}
+                titlesData={titlesData}
+                amountData={amountData}
               />
             </div>
 
-            <div className="dashboard-page-chart-bar-content">
+            {/* <div className="dashboard-page-chart-bar-content">
               <span>Aspirantes</span>
               <Chartbar
                 titlesData={["Aspirantes gastadores", "Aspirantes batonistas"]}
                 amountData={[15, 70]}
               />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -134,15 +203,15 @@ export const DashboardPage = () => {
 
           <div className="dashboard-page-summary-grid">
             <div className="dashboard-page-summary-card">
-              <span className="number">120</span>
+              <span className="number">{memberDataList.length}</span>
               <p className="title">Total Integrantes</p>
             </div>
             <div className="dashboard-page-summary-card">
-              <span className="number">80</span>
+              <span className="number">{totalNewMembers}</span>
               <p className="title">Nuevos Integrantes</p>
             </div>
             <div className="dashboard-page-summary-card">
-              <span className="number">25</span>
+              <span className="number">{totalOldMembers}</span>
               <p className="title">Integrantes Antiguos</p>
             </div>
           </div>

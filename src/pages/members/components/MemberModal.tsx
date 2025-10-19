@@ -11,8 +11,12 @@ import { QRComponent } from "../../components/QRComponent";
 import { useGeneralStore } from "../../../hooks/useGeneralStore";
 import { CustomLoader } from "../../components/CustomLoader";
 import Utils from "../../../utils/Utils";
+import { useMemberStore } from "../../../hooks/useMemberStore";
+import { CustomAlert } from "../../components/CustomAlert";
+import MemberDTO from "../../../interfaces/MemberDTO";
 
 interface Props {
+  member: MemberDTO;
   onClose: () => void;
 }
 
@@ -29,11 +33,12 @@ const states: ComboboxData[] = [
 ];
 
 
-export const MemberModal = ({ onClose }: Props) => {
+export const MemberModal = ({ member, onClose }: Props) => {
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, degreesList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition, GetDegrees } = useGeneralStore();
-  const { formData, onChange, onSelectChange } = useForm<Member>({
+  const { isLoadingMemberSlice, errorMemberSliceMessage, InsertMember } = useMemberStore();
+  const { formData, setFormData, onChange, onSelectChange } = useForm<Member>({
     idIntegrante: 0,
     nombres: "",
     apellidos: "",
@@ -60,6 +65,12 @@ export const MemberModal = ({ onClose }: Props) => {
     useState<boolean>(false);
   const [showOtherCareer, setShowOtherCareer] = useState<boolean>(false);
   const [showOtherDegree, setShowOtherDegree] = useState<boolean>(false);
+
+  const [alert, setAlert] = useState<{
+    title: string;
+    message: string;
+    status: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     GetEstablishment();
@@ -133,18 +144,80 @@ export const MemberModal = ({ onClose }: Props) => {
       return;
     }
 
-    console.log(formData);
+    // insert
+    if (formData.idIntegrante === 0) {
+      InsertMember(formData);
+    }
+    // update
+    else {
+      console.log(formData);
+    }
   };
+
+  useEffect(() => {
+    if (member && member.intIdIntegrante !== 0) {
+      setFormData({
+        idIntegrante: member.intIdIntegrante,
+        nombres: member.intNombres || "",
+        apellidos: member.intApellidos || "",
+        edad: member.intEdad || 1,
+        telefono: member.intTelefono || "",
+        idEstablecimiento: member.intestIdEstablecimiento || 0,
+        establecimientoNombre: member.intEstablecimientoNombre || "",
+        idCarrera: member.intcarIdCarrera || 0,
+        carreraNombre: member.intCarreraNombre || "",
+        idGrado: member.intgraIdGrado || 0,
+        gradoNombre: member.graNombreGrado || "",
+        seccion: member.intSeccion || "",
+        idEscuadra: member.intescIdEscuadra || 0,
+        idPuesto: member.intpuIdPuesto || 0,
+        esNuevo: member.intEsNuevo !== 0 ? 3 : 1,
+        usuario: member.intUsuario ?? "",
+        estadoIntegrante: member.intEstadoIntegrante || 1,
+        nombreEncargado: member.intNombreEncargado || "",
+        telefonoEncargado: member.intTelefonoEncargado || "",
+      });
+    }
+  }, [member]);
+
+
+  useEffect(() => {
+    if (errorMessage) {
+      setAlert({
+        title: "Error",
+        message: errorMessage,
+        status: "error"
+      })
+    }
+  }, [errorMessage])
+
+  useEffect(() => {
+    if (errorMemberSliceMessage) {
+      setAlert({
+        title: "Error",
+        message: errorMemberSliceMessage,
+        status: "error"
+      })
+    }
+  }, [errorMessage])
 
   return (
     <>
       {
-        isLoadingGeneralSlice && <CustomLoader />
+        (isLoadingGeneralSlice || isLoadingMemberSlice) && <CustomLoader />
+      }
+      {
+        alert && <CustomAlert
+          message={alert.message}
+          title={alert.title}
+          status={alert.status}
+          onClose={() => setAlert(null)}
+        />
       }
       <div className="container-main-member-modal">
         <div className="content-member-modal">
           <div className="content-header-member-modal">
-            <strong>Crear Usuario</strong>
+            <strong>{formData.idIntegrante === 0 ? "Crear Usuario" : "Editar Usuario"}</strong>
             <FaTimes className="icon" onClick={onClose} />
           </div>
 
@@ -158,7 +231,7 @@ export const MemberModal = ({ onClose }: Props) => {
                 <div className="qr-content-member-modal">
                   <span>Código QR</span>
                   {
-                    formData.idIntegrante === 0 ? <FaQrcode className="icon" /> : <QRComponent data="100" />
+                    formData.idIntegrante === 0 ? <FaQrcode className="icon" /> : <QRComponent data={formData.idIntegrante!.toString()} />
                   }
                 </div>
                 <div className="personal-inputs-member-modal">
@@ -228,7 +301,7 @@ export const MemberModal = ({ onClose }: Props) => {
                           errorMessage={errors.idEstablecimiento}
                         />
                       </div>
-                      {showOtherEstablishment && (
+                      {(showOtherEstablishment || formData.idEstablecimiento === 3) && (
                         <div className="container-input-member-modal">
                           <CustomInput
                             name="establecimientoNombre"
@@ -256,7 +329,7 @@ export const MemberModal = ({ onClose }: Props) => {
                           errorMessage={errors.idCarrera}
                         />
                       </div>
-                      {showOtherCareer && (
+                      {(showOtherCareer || formData.idCarrera === 6) && (
                         <div className="container-input-member-modal">
                           <CustomInput
                             name="carreraNombre"
@@ -283,7 +356,7 @@ export const MemberModal = ({ onClose }: Props) => {
                           errorMessage={errors.idGrado}
                         />
                       </div>
-                      {showOtherDegree && (
+                      {(showOtherDegree || formData.idGrado === 7) && (
                         <div className="container-input-member-modal">
                           <CustomInput
                             name="gradoNombre"
@@ -353,7 +426,7 @@ export const MemberModal = ({ onClose }: Props) => {
                         <CustomInput
                           name="usuario"
                           label="Usuario"
-                          disabled={formData.idIntegrante === 0}
+                          disabled
                           value={formData.usuario!}
                           onChange={onChange}
                         />

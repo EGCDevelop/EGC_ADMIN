@@ -2,25 +2,27 @@ interface MemberDTO {
     intIdIntegrante: number;
     intNombres: string;
     intApellidos: string;
+    intEdad: number;
     intTelefono: string;
-    intESTIdEstablecimiento: number;
+    intestIdEstablecimiento: number;
     estNombreEstablecimiento: string;
     intEstablecimientoNombre: string;
-    intCARIdCarrera: number;
+    intcarIdCarrera: number;
     carNombreCarrera: string;
     intCarreraNombre: string;
-    intGRAIdGrado: number;
+    intgraIdGrado: number;
     graNombreGrado: string;
     intGradoNombre: string;
     intSeccion: string;
-    intESCIdEscuadra: number;
+    intescIdEscuadra: number;
     escNombre: string
     intEsNuevo: number;
     intNombreEncargado: string;
     intTelefonoEncargado: string;
     intEstadoIntegrante: number;
-    intPUIdPuesto: number;
+    intpuIdPuesto: number;
     puNombre: string;
+    intUsuario?: string;
 }
 
 export default MemberDTO;

@@ -1,12 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
-import { onLoadingMemberSlice, onSetErrorMemberSlice, onSetMemberDataList } from "../store/member/memberSlice";
+import { onCreateMember, onLoadingMemberSlice, onSetErrorMemberSlice, onSetMemberDataList } from "../store/member/memberSlice";
+import Member from "../interfaces/Member";
+import Utils from "../utils/Utils";
 
 const apiUrl = Config.apiUrl;
 
 export const useMemberStore = () => {
-    const { isLoadingMemberSlice, memberDataList, errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
+    const { isLoadingMemberSlice, memberDataList, lastCreate,
+        errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -45,11 +48,67 @@ export const useMemberStore = () => {
         }
     }
 
+    const InsertMember = async (data: Member) => {
+        dispatch(onLoadingMemberSlice());
+        try {
+            let createUsername: string | null = Utils.normalize(data.usuario);
+
+            if (data.idPuesto !== 8) {
+                createUsername = data.usuario?.trim() ? Utils.normalize(data.usuario) : data.nombres.charAt(0).concat(data.apellidos.split(" ")[0]).toLowerCase();
+            }
+
+            const jsonData = {
+                firstName: data.nombres,
+                lastName: data.apellidos,
+                age: data.edad ?? 0,
+                cellPhone: data.telefono,
+                squadId: data.idEscuadra,
+                positionId: data.idPuesto,
+                isActive: data.estadoIntegrante === 1,
+                isAncient: data.esNuevo === 3,
+
+                establecimientoId: data.idEstablecimiento,
+                anotherEstablishment: Utils.normalize(data.establecimientoNombre),
+                courseId: data.idCarrera,
+                courseName: Utils.normalize(data.carreraNombre),
+                degreeId: data.idGrado,
+                degreeName: Utils.normalize(data.gradoNombre),
+                section: data.seccion,
+
+                fatherName: Utils.normalize(data.nombreEncargado),
+                fatherCell: Utils.normalize(data.telefonoEncargado),
+                username: createUsername
+            };
+
+            const response = await fetch(`${apiUrl}/Member/insert_member`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.ok) {
+                dispatch(onSetErrorMemberSlice(result.message || "Error al crear integrante"))
+                return;
+            }
+
+            dispatch(onCreateMember(result.ok === true));
+        } catch (error) {
+            dispatch(onSetErrorMemberSlice((error as Error).message));
+        }
+    }
+
     return {
         isLoadingMemberSlice,
         memberDataList,
         errorMemberSliceMessage,
+        lastCreate,
 
-        GetMemberForInstructor
+        GetMemberForInstructor,
+        InsertMember
     }
 }

@@ -8,18 +8,23 @@ interface Props {
 
 export const Chartbar = ({ titlesData, amountData }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    const chart = echarts.init(chartRef.current);
+    // Si no hay instancia, crearla
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(chartRef.current);
+    }
 
+    const chart = chartInstanceRef.current;
+
+    // Configurar opciones
     const option: echarts.EChartsOption = {
       tooltip: {
         trigger: "axis",
-        axisPointer: {
-          type: "shadow",
-        },
+        axisPointer: { type: "shadow" },
       },
       grid: {
         left: "1%",
@@ -31,22 +36,19 @@ export const Chartbar = ({ titlesData, amountData }: Props) => {
         {
           type: "category",
           data: titlesData,
-          axisTick: {
-            alignWithLabel: true,
-          },
+          axisTick: { alignWithLabel: true },
         },
       ],
-      yAxis: [
-        {
-          type: "value",
-        },
-      ],
+      yAxis: [{ type: "value" }],
       series: [
         {
           name: "Integrantes",
           type: "bar",
           barWidth: "50%",
           data: amountData,
+          itemStyle: {
+            color: "#5070dd",
+          },
         },
       ],
     };
@@ -58,7 +60,17 @@ export const Chartbar = ({ titlesData, amountData }: Props) => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      chart.dispose();
+      // No hacemos dispose aquí, para mantener la instancia si los datos cambian
+    };
+  }, [titlesData, amountData]); // 👈 dependencia de datos
+
+  // Si se desmonta por completo, liberar instancia
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose();
+        chartInstanceRef.current = null;
+      }
     };
   }, []);
 

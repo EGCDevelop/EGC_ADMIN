@@ -1,6 +1,10 @@
 import ComboboxData from "../interfaces/ComboboxData";
 
 class Utils {
+
+  public static normalize = (value: string | null): string | null =>
+    value === "" || value === null ? null : value;
+
   public static validarPassword = (password: string) => {
     const passwordRe =
       /^(?=.{8,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;

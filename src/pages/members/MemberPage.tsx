@@ -6,7 +6,6 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import "./styles/member-page.css";
 import { FaPenToSquare } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { MemberModal } from "./components/MemberModal";
@@ -20,6 +19,8 @@ import Utils from "../../utils/Utils";
 import { useForm } from "../../hooks/useForm";
 import { useMemberStore } from "../../hooks/useMemberStore";
 import { useDebounce } from "../../hooks/useDebounce";
+import "./styles/member-page.css";
+import MemberDTO from "../../interfaces/MemberDTO";
 
 interface DataFilter {
   name: string;
@@ -30,12 +31,41 @@ interface DataFilter {
   isNew: number;
 }
 
+const resetMemberData: MemberDTO = {
+  intIdIntegrante: 0,
+  intNombres: "",
+  intApellidos: "",
+  intEdad: 1,
+  intTelefono: "",
+  intestIdEstablecimiento: 0,
+  estNombreEstablecimiento: "",
+  intEstablecimientoNombre: "",
+  intcarIdCarrera: 0,
+  carNombreCarrera: "",
+  intCarreraNombre: "",
+  intgraIdGrado: 0,
+  graNombreGrado: "",
+  intGradoNombre: "",
+  intSeccion: "",
+  intescIdEscuadra: 0,
+  escNombre: "",
+  intEsNuevo: 3,
+  intNombreEncargado: "",
+  intTelefonoEncargado: "",
+  intEstadoIntegrante: 1,
+  intpuIdPuesto: 8,
+  puNombre: "",
+  intUsuario: ""
+}
+
 export const MemberPage = () => {
   const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList, GetMemberForInstructor } = useMemberStore();
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition } = useGeneralStore();
+  const { lastCreate } = useMemberStore();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [memberDataUpdate, setMemberDataUpdate] = useState<MemberDTO>(resetMemberData);
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
   const { formData, onChange, onSelectChange } = useForm<DataFilter>({
     name: "",
@@ -105,6 +135,17 @@ export const MemberPage = () => {
   }, [errorMessage])
 
   useEffect(() => {
+    if (lastCreate) {
+      setAlert({
+        title: "Exito",
+        message: "Integrante creado exitosamente",
+        status: "success"
+      });
+      setOpenModal(false);
+    }
+  }, [lastCreate])
+
+  useEffect(() => {
     GetMemberForInstructor(
       debouncedName,
       formData.squad,
@@ -113,7 +154,8 @@ export const MemberPage = () => {
       1,
       formData.career
     );
-  }, [debouncedName, formData.establishment, formData.career, formData.squad, formData.position, formData.isNew])
+  }, [debouncedName, formData.establishment, formData.career,
+    formData.squad, formData.position, formData.isNew, lastCreate])
 
   return (
     <>
@@ -126,7 +168,7 @@ export const MemberPage = () => {
           onClose={() => setAlert(null)}
         />
       }
-      {openModal && <MemberModal onClose={() => setOpenModal(false)} />}
+      {openModal && <MemberModal member={memberDataUpdate} onClose={() => setOpenModal(false)} />}
       {openCancelModal && (
         <CancelMemberModal onClose={() => setOpenCancelModal(false)} />
       )}
@@ -144,7 +186,10 @@ export const MemberPage = () => {
             <button
               type="button"
               className="member-page-add-button"
-              onClick={() => setOpenModal(true)}
+              onClick={() => {
+                setMemberDataUpdate(resetMemberData);
+                setOpenModal(true);
+              }}
             >
               <FaPlus />
               Nuevo
@@ -254,7 +299,11 @@ export const MemberPage = () => {
                   <div className="action-menu">
                     <button className="action-btn">⋮</button>
                     <div className="dropdown">
-                      <button type="button">
+                      <button type="button" onClick={() => {
+                        console.log(user)
+                        setMemberDataUpdate(user);
+                        setOpenModal(true);
+                      }}>
                         <FaPenToSquare /> Editar
                       </button>
                       <button type="button">
