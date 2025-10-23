@@ -5,7 +5,7 @@ import { ChartPie } from "./components/ChartPie";
 import { FaCalendar, FaChartPie } from "react-icons/fa6";
 import { useGeneralStore } from "../../hooks/useGeneralStore";
 import { useForm } from "../../hooks/useForm";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CustomLoader } from "../components/CustomLoader";
 import { CustomAlert } from "../components/CustomAlert";
 import { useMemberStore } from "../../hooks/useMemberStore";
@@ -83,6 +83,48 @@ export const DashboardPage = () => {
     }
   }, [errorMemberSliceMessage])
 
+  const order = ["Gomez", "Romulo", "Otros"];
+
+  const chartData = useMemo(() => {
+    const counts: Record<string, number> = {};
+
+    memberDataList.forEach((member) => {
+      const name = member.estNombreEstablecimiento || "Sin nombre";
+      counts[name] = (counts[name] || 0) + 1;
+    });
+
+    const data = Object.entries(counts).map(([name, value]) => ({
+      name,
+      value
+    }));
+
+    data.sort((a, b) => {
+      const indexA = order.indexOf(a.name);
+      const indexB = order.indexOf(b.name);
+
+      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+    });
+
+    return data;
+  }, [memberDataList]);
+
+  const newVsOldData = useMemo(() => {
+    let nuevos = 0;
+    let antiguos = 0;
+
+    memberDataList.forEach((member) => {
+      if (member.intEsNuevo === 1) {
+        nuevos++;
+      } else {
+        antiguos++;
+      }
+    });
+
+    return [
+      { name: "Nuevos", value: nuevos },
+      { name: "Antiguos", value: antiguos },
+    ];
+  }, [memberDataList]);
 
   return (
     <>
@@ -173,13 +215,15 @@ export const DashboardPage = () => {
               <strong>
                 <FaChartPie /> Distribución por Establecimiento
               </strong>
-              <ChartPie
+              {/* <ChartPie
                 data={[
                   { value: 120, name: "Enrique Gomez Carrillo" },
                   { value: 80, name: "Romulo Gallego" },
                   { value: 25, name: "Otros" },
                 ]}
-              />
+              /> */}
+              <ChartPie
+                data={chartData} />
             </div>
 
             <div className="dashboard-page-chart-bar-content">
@@ -187,10 +231,7 @@ export const DashboardPage = () => {
                 <FaCalendar /> Nuevos vs Antiguos Integrantes
               </strong>
               <ChartPie
-                data={[
-                  { value: 120, name: "Antiguos" },
-                  { value: 80, name: "Nuevos" },
-                ]}
+                data={newVsOldData}
               />
             </div>
           </div>

@@ -2,6 +2,8 @@ import { FaExclamation } from "react-icons/fa";
 import { CustomTextarea } from "../../components/CustomTextarea";
 import { useForm } from "../../../hooks/useForm";
 import { FormEvent, useState } from "react";
+import { useMemberStore } from "../../../hooks/useMemberStore";
+import MemberDTO from "../../../interfaces/MemberDTO";
 import "../styles/cancel-member-modal.css";
 
 interface FormCancelData {
@@ -9,10 +11,12 @@ interface FormCancelData {
 }
 
 interface Props {
+  member: MemberDTO;
   onClose: () => void;
 }
 
-export const CancelMemberModal = ({ onClose }: Props) => {
+export const CancelMemberModal = ({ member, onClose }: Props) => {
+  const { UpdateMemberState, ResetState } = useMemberStore();
   const { formData, onTextAreaChange } = useForm<FormCancelData>({
     comment: "",
   });
@@ -34,6 +38,9 @@ export const CancelMemberModal = ({ onClose }: Props) => {
     }
 
     console.log(formData);
+
+    UpdateMemberState(member.intIdIntegrante, 0, formData.comment);
+    ResetState();
   };
 
   return (
@@ -44,7 +51,7 @@ export const CancelMemberModal = ({ onClose }: Props) => {
             <FaExclamation className="icon" />
             <strong>Confirmar Acción</strong>
             <p>
-              ¿Estás seguro de que deseas dar de baja a Carlos Eduardo García?
+              ¿Estás seguro de que deseas dar de baja a {member.intNombres} {member.intApellidos}?
             </p>
           </div>
 

@@ -5,6 +5,8 @@ interface MemberSlice {
     isLoadingMemberSlice: boolean;
     memberDataList: MemberDTO[];
     lastCreate?: boolean;
+    lastUpdate?: boolean;
+    changeMemberState?: boolean;
     errorMemberSliceMessage?: string;
 }
 
@@ -12,6 +14,8 @@ const initialState: MemberSlice = {
     isLoadingMemberSlice: false,
     memberDataList: [],
     lastCreate: false,
+    lastUpdate: false,
+    changeMemberState: false,
     errorMemberSliceMessage: undefined
 }
 
@@ -29,6 +33,7 @@ export const memberSlice = createSlice({
             state.memberDataList = action.payload,
                 state.errorMemberSliceMessage = undefined;
             state.lastCreate = false;
+            state.lastUpdate = false;
         },
 
         onCreateMember: (state, action: PayloadAction<boolean>) => {
@@ -36,10 +41,26 @@ export const memberSlice = createSlice({
             state.lastCreate = action.payload;
         },
 
+        onUpdateMember: (state, action: PayloadAction<boolean>) => {
+            state.isLoadingMemberSlice = false;
+            state.lastUpdate = action.payload;
+        },
+
+        onUpdateMemberStaste: (state, action: PayloadAction<boolean>) => {
+            state.isLoadingMemberSlice = false;
+            state.changeMemberState = action.payload;
+        },
+
         onSetErrorMemberSlice: (state, action: PayloadAction<string>) => {
             state.isLoadingMemberSlice = false;
             state.memberDataList = [];
             state.errorMemberSliceMessage = action.payload;
+        },
+
+        onResetStates: (state) => {
+            state.lastCreate = false;
+            state.lastUpdate = false;
+            state.changeMemberState = false;
         }
     }
 });
@@ -48,6 +69,9 @@ export const {
     onLoadingMemberSlice,
     onSetErrorMemberSlice,
     onSetMemberDataList,
-    onCreateMember
+    onCreateMember,
+    onUpdateMember,
+    onUpdateMemberStaste,
+    onResetStates
 } = memberSlice.actions;
 export default memberSlice.reducer;

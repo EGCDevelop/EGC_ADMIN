@@ -1,15 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
-import { onCreateMember, onLoadingMemberSlice, onSetErrorMemberSlice, onSetMemberDataList } from "../store/member/memberSlice";
+import { onCreateMember, onLoadingMemberSlice, onResetStates, onSetErrorMemberSlice, onSetMemberDataList, onUpdateMember, onUpdateMemberStaste } from "../store/member/memberSlice";
 import Member from "../interfaces/Member";
 import Utils from "../utils/Utils";
 
 const apiUrl = Config.apiUrl;
 
 export const useMemberStore = () => {
-    const { isLoadingMemberSlice, memberDataList, lastCreate,
-        errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
+    const { isLoadingMemberSlice, memberDataList, lastCreate, lastUpdate,
+        changeMemberState, errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -102,13 +102,112 @@ export const useMemberStore = () => {
         }
     }
 
+
+    const UpdateMember = async (data: Member) => {
+        dispatch(onLoadingMemberSlice());
+        try {
+            let createUsername: string | null = Utils.normalize(data.usuario);
+            let createPassword: string | null = null;
+
+            if (data.idPuesto !== 8) {
+                createUsername = data.nombres.charAt(0) + data.apellidos.split(" ")[0];
+                createPassword = Utils.getPassword(data.idEscuadra);
+            } else {
+                createUsername = null;
+            }
+
+            const jsonData = {
+                memberId: data.idIntegrante,
+                firstName: data.nombres,
+                lastName: data.apellidos,
+                cellPhone: data.telefono,
+                squadId: data.idEscuadra,
+                positionId: data.idPuesto,
+                isActive: data.estadoIntegrante,
+                isAncient: data.esNuevo === 3 ? 1 : 0,
+                age: data.edad ?? 0,
+
+                establecimientoId: data.idEstablecimiento,
+                anotherEstablishment: data.establecimientoNombre,
+                courseId: data.idCarrera,
+                courseName: data.carreraNombre,
+                degreeId: data.idGrado,
+                section: data.seccion,
+
+                fatherName: data.nombreEncargado,
+                fatherCell: data.telefonoEncargado,
+                username: createUsername?.toLocaleLowerCase(),
+                password: createPassword
+            };
+
+            const response = await fetch(`${apiUrl}/Member/update_member`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.ok) {
+                dispatch(onSetErrorMemberSlice(result.message || "Error al crear integrante"))
+                return;
+            }
+
+            dispatch(onUpdateMember(result.ok === true));
+        } catch (error) {
+            dispatch(onSetErrorMemberSlice((error as Error).message));
+        }
+    }
+
+    const UpdateMemberState = async (memberId: number, state: number, comment: string) => {
+        dispatch(onLoadingMemberSlice());
+        try {
+
+            const jsonData = {
+                memberId: memberId,
+                newState: state,
+                comment: Utils.normalize(comment)
+            };
+
+            const response = await fetch(`${apiUrl}/Member/update_member_state`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.ok) {
+                dispatch(onSetErrorMemberSlice(result.message || "Error al crear integrante"))
+                return;
+            }
+
+            dispatch(onUpdateMemberStaste(result.ok === true));
+        } catch (error) {
+            dispatch(onSetErrorMemberSlice((error as Error).message));
+        }
+    }
+
+    const ResetState = () => dispatch(onResetStates());
+
     return {
         isLoadingMemberSlice,
         memberDataList,
         errorMemberSliceMessage,
         lastCreate,
+        lastUpdate,
+        changeMemberState,
 
         GetMemberForInstructor,
-        InsertMember
+        InsertMember,
+        UpdateMember,
+        UpdateMemberState,
+        ResetState
     }
 }

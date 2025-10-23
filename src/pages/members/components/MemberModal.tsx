@@ -3,7 +3,6 @@ import { FaFloppyDisk, FaXmark } from "react-icons/fa6";
 import { CustomInput } from "../../components/CustomInput";
 import { CustomSelect } from "../../components/CustomSelect";
 import ComboboxData from "../../../interfaces/ComboboxData";
-import "../styles/member-modal.css";
 import { useForm } from "../../../hooks/useForm";
 import Member from "../../../interfaces/Member";
 import { FormEvent, useEffect, useState } from "react";
@@ -14,12 +13,12 @@ import Utils from "../../../utils/Utils";
 import { useMemberStore } from "../../../hooks/useMemberStore";
 import { CustomAlert } from "../../components/CustomAlert";
 import MemberDTO from "../../../interfaces/MemberDTO";
+import "../styles/member-modal.css";
 
 interface Props {
   member: MemberDTO;
   onClose: () => void;
 }
-
 
 const states: ComboboxData[] = [
   {
@@ -32,12 +31,11 @@ const states: ComboboxData[] = [
   },
 ];
 
-
 export const MemberModal = ({ member, onClose }: Props) => {
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, degreesList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition, GetDegrees } = useGeneralStore();
-  const { isLoadingMemberSlice, errorMemberSliceMessage, InsertMember } = useMemberStore();
+  const { isLoadingMemberSlice, errorMemberSliceMessage, InsertMember, UpdateMember } = useMemberStore();
   const { formData, setFormData, onChange, onSelectChange } = useForm<Member>({
     idIntegrante: 0,
     nombres: "",
@@ -150,7 +148,7 @@ export const MemberModal = ({ member, onClose }: Props) => {
     }
     // update
     else {
-      console.log(formData);
+      UpdateMember(formData);
     }
   };
 
@@ -437,7 +435,7 @@ export const MemberModal = ({ member, onClose }: Props) => {
                           name="estadoIntegrante"
                           label="Estado"
                           request
-                          disabled={formData.idIntegrante === 0}
+                          disabled
                           onChange={onSelectChange}
                           value={formData.estadoIntegrante}
                         />

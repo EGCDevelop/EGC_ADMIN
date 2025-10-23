@@ -1,3 +1,4 @@
+import QRCodeStyling from "qr-code-styling";
 import ComboboxData from "../interfaces/ComboboxData";
 
 class Utils {
@@ -36,6 +37,84 @@ class Utils {
     ];
 
     return stateData;
+  }
+
+  public static getPassword = (squadId: number): string => {
+    let password: string = "";
+    switch (squadId) {
+      case 1:
+        password = "gas1234"
+        break;
+      case 2:
+        password = "bato1234"
+        break;
+      case 3:
+        password = "vien1234"
+        break;
+      case 4:
+        password = "xilo1234"
+        break;
+      case 5:
+        password = "lir1234"
+        break;
+      case 6:
+        password = "marc1234"
+        break;
+      case 7:
+        password = "tam1234"
+        break;
+      case 8:
+        password = "redo1234"
+        break;
+      case 9:
+        password = "bomb1234"
+        break;
+      case 10:
+        password = "bom1234"
+        break;
+      case 12:
+        password = "gas1234"
+        break;
+      case 13:
+        password = "bato1234"
+        break;
+
+      default:
+        break;
+    }
+
+    return password;
+  }
+
+  public static downloadQR = async (data: string, format: "png" | "jpeg" | "svg" | "webp") => {
+    const qrExport = new QRCodeStyling({
+      width: 500, // resolución grande
+      height: 500,
+      data,
+      dotsOptions: {
+        color: "#000",
+        type: "dots",
+      },
+      backgroundOptions: {
+        color: "#ffffff",
+      },
+      image: "/egc.jpeg",
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 5,
+      },
+      // 🔥 Personalización de las esquinas
+      cornersSquareOptions: {
+        color: "#276fc2ff", // azul oscuro por ejemplo
+        type: "classy-rounded", // puedes probar: square | dot | extra-rounded
+      },
+      cornersDotOptions: {
+        color: "#000", // amarillo para el punto central
+        type: "classy-rounded", // dot o square
+      },
+    });
+
+    await qrExport.download({ name: "qr-member", extension: format });
   }
 }
 

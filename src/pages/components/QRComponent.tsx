@@ -2,6 +2,7 @@ import QRCodeStyling from "qr-code-styling";
 import { useEffect, useRef } from "react";
 import { FaImage } from "react-icons/fa";
 import "../../styles/qr-component.css";
+import Utils from "../../utils/Utils";
 
 interface QRComponentProps {
   data: string;
@@ -53,44 +54,13 @@ export const QRComponent = ({ data }: QRComponentProps) => {
     };
   }, [data]);
 
-  const handleDownload = async (format: "png" | "jpeg" | "svg" | "webp") => {
-    const qrExport = new QRCodeStyling({
-      width: 500, // resolución grande
-      height: 500,
-      data,
-      dotsOptions: {
-        color: "#000",
-        type: "dots",
-      },
-      backgroundOptions: {
-        color: "#ffffff",
-      },
-      image: "/egc.jpeg",
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 5,
-      },
-      // 🔥 Personalización de las esquinas
-      cornersSquareOptions: {
-        color: "#276fc2ff", // azul oscuro por ejemplo
-        type: "classy-rounded", // puedes probar: square | dot | extra-rounded
-      },
-      cornersDotOptions: {
-        color: "#000", // amarillo para el punto central
-        type: "classy-rounded", // dot o square
-      },
-    });
-
-    await qrExport.download({ name: "qr-member", extension: format });
-  };
-
   return (
     <div style={{ textAlign: "center" }}>
       <div ref={ref} />
       <div style={{ marginTop: "12px" }}>
         <button
           type="button"
-          onClick={() => handleDownload("png")}
+          onClick={() => Utils.downloadQR(data, "png")}
           className="qr-dowload-button"
         >
           <FaImage /> Descargar

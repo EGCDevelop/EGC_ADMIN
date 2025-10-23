@@ -59,11 +59,11 @@ const resetMemberData: MemberDTO = {
 }
 
 export const MemberPage = () => {
-  const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList, GetMemberForInstructor } = useMemberStore();
+  const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList,
+    lastCreate, lastUpdate, changeMemberState, GetMemberForInstructor } = useMemberStore();
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition } = useGeneralStore();
-  const { lastCreate } = useMemberStore();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [memberDataUpdate, setMemberDataUpdate] = useState<MemberDTO>(resetMemberData);
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
@@ -146,6 +146,28 @@ export const MemberPage = () => {
   }, [lastCreate])
 
   useEffect(() => {
+    if (lastUpdate) {
+      setAlert({
+        title: "Exito",
+        message: "Integrante modificado exitosamente",
+        status: "success"
+      });
+      setOpenModal(false);
+    }
+  }, [lastUpdate])
+
+  useEffect(() => {
+    if (changeMemberState) {
+      setAlert({
+        title: "Exito",
+        message: "Integrante dado de baja",
+        status: "success"
+      });
+      setOpenCancelModal(false);
+    }
+  }, [changeMemberState])
+
+  useEffect(() => {
     GetMemberForInstructor(
       debouncedName,
       formData.squad,
@@ -155,7 +177,7 @@ export const MemberPage = () => {
       formData.career
     );
   }, [debouncedName, formData.establishment, formData.career,
-    formData.squad, formData.position, formData.isNew, lastCreate])
+    formData.squad, formData.position, formData.isNew, lastCreate, lastUpdate, changeMemberState])
 
   return (
     <>
@@ -170,7 +192,7 @@ export const MemberPage = () => {
       }
       {openModal && <MemberModal member={memberDataUpdate} onClose={() => setOpenModal(false)} />}
       {openCancelModal && (
-        <CancelMemberModal onClose={() => setOpenCancelModal(false)} />
+        <CancelMemberModal member={memberDataUpdate} onClose={() => setOpenCancelModal(false)} />
       )}
       <div className="member-page-main-container">
         <div className="member-page-header">
@@ -281,10 +303,10 @@ export const MemberPage = () => {
             {paginatedData.map((user) => (
               <div className="member-page-table-row" key={user.intIdIntegrante}>
                 <div className="cell">{user.intNombres.concat(" ").concat(user.intApellidos)}</div>
+                <div className="cell">{user.estNombreEstablecimiento}</div>
                 <div className="cell">
                   <p className="cell-squad">{user.escNombre}</p>
                 </div>
-                <div className="cell">{user.estNombreEstablecimiento}</div>
                 <div className="cell">{user.carNombreCarrera}</div>
                 <div className="cell">
                   <p
@@ -300,18 +322,20 @@ export const MemberPage = () => {
                     <button className="action-btn">⋮</button>
                     <div className="dropdown">
                       <button type="button" onClick={() => {
-                        console.log(user)
                         setMemberDataUpdate(user);
                         setOpenModal(true);
                       }}>
                         <FaPenToSquare /> Editar
                       </button>
-                      <button type="button">
+                      <button type="button" onClick={() => Utils.downloadQR(user.intIdIntegrante.toString(), "png")}>
                         <FaDownload /> Descargar QR
                       </button>
                       <button
                         type="button"
-                        onClick={() => setOpenCancelModal(true)}
+                        onClick={() => {
+                          setMemberDataUpdate(user);
+                          setOpenCancelModal(true)
+                        }}
                       >
                         <FaTrash /> Dar baja
                       </button>
