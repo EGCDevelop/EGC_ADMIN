@@ -60,7 +60,7 @@ const resetMemberData: MemberDTO = {
 
 export const MemberPage = () => {
   const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList,
-    lastCreate, lastUpdate, changeMemberState, GetMemberForInstructor } = useMemberStore();
+    lastCreate, lastUpdate, changeMemberState, GetMemberForInstructor, ResetState } = useMemberStore();
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition } = useGeneralStore();
@@ -165,6 +165,7 @@ export const MemberPage = () => {
       });
       setOpenCancelModal(false);
     }
+    ResetState();
   }, [changeMemberState])
 
   useEffect(() => {
@@ -174,7 +175,8 @@ export const MemberPage = () => {
       formData.establishment,
       formData.isNew,
       1,
-      formData.career
+      formData.career,
+      formData.position
     );
   }, [debouncedName, formData.establishment, formData.career,
     formData.squad, formData.position, formData.isNew, lastCreate, lastUpdate, changeMemberState])

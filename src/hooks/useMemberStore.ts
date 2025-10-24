@@ -14,7 +14,8 @@ export const useMemberStore = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const GetMemberForInstructor = async (like?: string, squadId?: number,
-        schoolId?: number, isNew?: number, memberState?: number, career?: number
+        schoolId?: number, isNew?: number, memberState?: number, career?: number,
+        positionId?: number
     ) => {
         dispatch(onLoadingMemberSlice());
 
@@ -27,6 +28,7 @@ export const useMemberStore = () => {
             if (isNew !== undefined) queryParams.append("isNew", isNew.toString());
             if (memberState !== undefined) queryParams.append("memberState", memberState.toString());
             if (career !== undefined) queryParams.append("career", career.toString());
+            if (positionId !== undefined) queryParams.append("positionId", positionId.toString());
 
             const response = await fetch(`${apiUrl}/Member/get_member_for_instructor?${queryParams.toString()}`, {
                 method: "GET",

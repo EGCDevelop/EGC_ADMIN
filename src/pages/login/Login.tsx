@@ -1,10 +1,11 @@
 import "../../styles/login.css";
 import logo from "../../assets/egc.jpeg";
 import { FaLock } from "react-icons/fa";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import { CustomLoader } from "../components/CustomLoader";
+import { CustomAlert } from "../components/CustomAlert";
 
 interface FormData {
   username: string;
@@ -12,13 +13,18 @@ interface FormData {
 }
 
 export const Login = () => {
-  const { isLoadingAuth, startLogin } = useAuthStore();
+  const { isLoadingAuth, errorAuthMessage, startLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { formData, onChange } = useForm<FormData>({
     username: "",
     password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [alert, setAlert] = useState<{
+    title: string;
+    message: string;
+    status: "success" | "error";
+  } | null>(null);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,10 +47,23 @@ export const Login = () => {
     startLogin(formData.username, formData.password);
   };
 
+  useEffect(() => {
+    if (errorAuthMessage) {
+      setAlert({
+        title: "Error",
+        message: errorAuthMessage!,
+        status: "error"
+      })
+    }
+  }, [errorAuthMessage])
+
   return (
     <>
       {
         isLoadingAuth && <CustomLoader />
+      }
+      {
+        alert && <CustomAlert title={alert!.title} message={alert!.message} status={alert!.status} onClose={() => setAlert(null)} />
       }
       <div className="container-main-logo">
         <img src={logo} alt="logo" />
