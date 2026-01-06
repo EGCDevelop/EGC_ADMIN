@@ -59,7 +59,8 @@ export const DashboardPage = () => {
       formData.idEstablishment,
       2,
       1,
-      formData.idCareer
+      formData.idCareer,
+      0
     )
   }, [formData.idEstablishment, formData.idCareer, formData.idSquad])
 

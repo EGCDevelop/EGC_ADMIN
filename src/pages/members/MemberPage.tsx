@@ -21,6 +21,7 @@ import { useMemberStore } from "../../hooks/useMemberStore";
 import { useDebounce } from "../../hooks/useDebounce";
 import "./styles/member-page.css";
 import MemberDTO from "../../interfaces/MemberDTO";
+import { useAuthStore } from "../../hooks/useAuthStore";
 
 interface DataFilter {
   name: string;
@@ -64,6 +65,7 @@ export const MemberPage = () => {
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition } = useGeneralStore();
+  const { user } = useAuthStore();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [memberDataUpdate, setMemberDataUpdate] = useState<MemberDTO>(resetMemberData);
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
@@ -207,17 +209,19 @@ export const MemberPage = () => {
               <p>Total de usuarios</p>
               <span>{memberDataList.length}</span>
             </div>
-            <button
-              type="button"
-              className="member-page-add-button"
-              onClick={() => {
-                setMemberDataUpdate(resetMemberData);
-                setOpenModal(true);
-              }}
-            >
-              <FaPlus />
-              Nuevo
-            </button>
+            {
+              user!.rol !== 3 && <button
+                type="button"
+                className="member-page-add-button"
+                onClick={() => {
+                  setMemberDataUpdate(resetMemberData);
+                  setOpenModal(true);
+                }}
+              >
+                <FaPlus />
+                Nuevo
+              </button>
+            }
           </div>
         </div>
 
@@ -302,45 +306,48 @@ export const MemberPage = () => {
             </div>
 
             {/* Filas */}
-            {paginatedData.map((user) => (
-              <div className="member-page-table-row" key={user.intIdIntegrante}>
-                <div className="cell">{user.intNombres.concat(" ").concat(user.intApellidos)}</div>
-                <div className="cell">{user.estNombreEstablecimiento}</div>
+            {paginatedData.map((data) => (
+              <div className="member-page-table-row" key={data.intIdIntegrante}>
+                <div className="cell">{data.intNombres.concat(" ").concat(data.intApellidos)}</div>
+                <div className="cell">{data.estNombreEstablecimiento}</div>
                 <div className="cell">
-                  <p className="cell-squad">{user.escNombre}</p>
+                  <p className="cell-squad">{data.escNombre}</p>
                 </div>
-                <div className="cell">{user.carNombreCarrera}</div>
+                <div className="cell">{data.carNombreCarrera}</div>
                 <div className="cell">
                   <p
-                    className={`${user.intEsNuevo ? "cell-state-inactive" : "cell-state-active"
+                    className={`${data.intEsNuevo ? "cell-state-inactive" : "cell-state-active"
                       }`}
                   >
-                    {user.intEsNuevo ? "Nuevo" : "Antiguo"}
+                    {data.intEsNuevo ? "Nuevo" : "Antiguo"}
                   </p>
                 </div>
-                <div className="cell">{user.puNombre}</div>
+                <div className="cell">{data.puNombre}</div>
                 <div className="cell actions">
                   <div className="action-menu">
                     <button className="action-btn">⋮</button>
                     <div className="dropdown">
                       <button type="button" onClick={() => {
-                        setMemberDataUpdate(user);
+                        setMemberDataUpdate(data);
                         setOpenModal(true);
                       }}>
                         <FaPenToSquare /> Editar
                       </button>
-                      <button type="button" onClick={() => Utils.downloadQR(user.intIdIntegrante.toString(), "png")}>
+                      <button type="button" onClick={() => Utils.downloadQR(data.intIdIntegrante.toString(), "png")}>
                         <FaDownload /> Descargar QR
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMemberDataUpdate(user);
-                          setOpenCancelModal(true)
-                        }}
-                      >
-                        <FaTrash /> Dar baja
-                      </button>
+                      {
+                        user!.rol !== 3 && <button
+                          type="button"
+                          onClick={() => {
+                            setMemberDataUpdate(data);
+                            setOpenCancelModal(true)
+                          }}
+                        >
+                          <FaTrash /> Dar baja
+                        </button>
+                      }
+
                     </div>
                   </div>
                 </div>

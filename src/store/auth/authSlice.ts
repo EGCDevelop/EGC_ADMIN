@@ -20,7 +20,9 @@ const initialState: AuthState = {
     idPuesto: 0,
     token: "",
     username: "",
-    area: ""
+    area: "",
+    rol: 0,
+    squadIdList: []
   },
   errorAuthMessage: undefined,
 };

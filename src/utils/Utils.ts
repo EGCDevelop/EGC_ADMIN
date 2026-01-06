@@ -1,5 +1,6 @@
 import QRCodeStyling from "qr-code-styling";
 import ComboboxData from "../interfaces/ComboboxData";
+import logo from '../assets/egc.jpeg';
 
 class Utils {
 
@@ -98,7 +99,8 @@ class Utils {
       backgroundOptions: {
         color: "#ffffff",
       },
-      image: "/egc.jpeg",
+      //image: "/egc.jpeg",
+      image: logo,
       imageOptions: {
         crossOrigin: "anonymous",
         margin: 5,

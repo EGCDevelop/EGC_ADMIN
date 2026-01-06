@@ -4,12 +4,15 @@ import { AppDispatch, RootState } from "../store/store";
 import { onCreateMember, onLoadingMemberSlice, onResetStates, onSetErrorMemberSlice, onSetMemberDataList, onUpdateMember, onUpdateMemberStaste } from "../store/member/memberSlice";
 import Member from "../interfaces/Member";
 import Utils from "../utils/Utils";
+import { useAuthStore } from "./useAuthStore";
 
 const apiUrl = Config.apiUrl;
 
 export const useMemberStore = () => {
     const { isLoadingMemberSlice, memberDataList, lastCreate, lastUpdate,
         changeMemberState, errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
+        const { user } = useAuthStore();
+
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -23,12 +26,27 @@ export const useMemberStore = () => {
             const queryParams = new URLSearchParams();
 
             if (like) queryParams.append("like", like);
-            if (squadId !== undefined) queryParams.append("squadId", squadId.toString());
+            //if (squadId !== undefined) queryParams.append("squadId", squadId.toString());
             if (schoolId !== undefined) queryParams.append("schoolId", schoolId.toString());
             if (isNew !== undefined) queryParams.append("isNew", isNew.toString());
             if (memberState !== undefined) queryParams.append("memberState", memberState.toString());
             if (career !== undefined) queryParams.append("career", career.toString());
             if (positionId !== undefined) queryParams.append("positionId", positionId.toString());
+
+
+            if (user!.rol === 1) {
+                // Si es Admin y seleccionó algo, lo mandamos; si no, 0
+                queryParams.append("squadId", squadId?.toString() || "0");
+            } else {
+                // Si NO es admin
+                if (squadId && squadId !== 0) {
+                    // Si seleccionó una específica del combo, mandamos solo esa
+                    queryParams.append("squadId", squadId.toString());
+                } else {
+                    // Si no seleccionó ninguna, mandamos TODAS sus permitidas
+                    queryParams.append("squadId", user!.squadIdList.join(','));
+                }
+            }
 
             const response = await fetch(`${apiUrl}/Member/get_member_for_instructor?${queryParams.toString()}`, {
                 method: "GET",

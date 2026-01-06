@@ -4,10 +4,16 @@ import { FaRightToBracket } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import { routes } from "../../router/routes";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import logo from '../../assets/egc.jpeg';
 
 export const Navbar = () => {
-  const { startLogout } = useAuthStore();
+  const { user, startLogout } = useAuthStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const filteredRoutes = routes.filter(route =>
+    route.roles.includes(user!.rol)
+  );
+
   return (
     <>
       <div className="topbar">
@@ -19,7 +25,8 @@ export const Navbar = () => {
 
       <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
         <div className="sidebar-header">
-          <img src="/egc.jpeg" alt="Logo" className="logo" />
+          {/* <img src="/egc.jpeg" alt="Logo" className="logo" /> */}
+          <img src={logo} alt="egc.jpeg" className="logo" />
           <h2>EGC Admin</h2>
         </div>
 
@@ -47,7 +54,7 @@ export const Navbar = () => {
           </div>
 
           <nav className="menu-items">
-            {routes.map((route) => (
+            {filteredRoutes.map((route) => (
               <NavLink
                 key={route.name}
                 to={route.to}

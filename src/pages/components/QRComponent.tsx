@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { FaImage } from "react-icons/fa";
 import "../../styles/qr-component.css";
 import Utils from "../../utils/Utils";
+import logo from '../../assets/egc.jpeg';
 
 interface QRComponentProps {
   data: string;
@@ -24,7 +25,7 @@ export const QRComponent = ({ data }: QRComponentProps) => {
       backgroundOptions: {
         color: "#ffffff",
       },
-      image: "/egc.jpeg",
+      image: logo,
       imageOptions: {
         crossOrigin: "anonymous",
         margin: 5,

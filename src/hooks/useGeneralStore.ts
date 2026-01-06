@@ -3,6 +3,7 @@ import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
 import { onLoadingGeneralSlice, onSetCareerList, onSetDegreesList, onSetErrorGeneralSlice, onSetEstablishmentList, onSetGeneralSlice, onSetPositionList, onSetSquadsList } from "../store/general/generalSlice";
 import ComboboxData from "../interfaces/ComboboxData";
+import { useAuthStore } from "./useAuthStore";
 
 const apiUrl = Config.apiUrl;
 
@@ -11,6 +12,8 @@ export const useGeneralStore = () => {
         establishmentList, careerList, squadsList, positionList,
         degreesList,
         errorMessage } = useSelector((state: RootState) => state.general);
+
+    const { user } = useAuthStore();
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -120,12 +123,25 @@ export const useGeneralStore = () => {
                 return;
             }
 
-            const comboSquads: ComboboxData[] = data.list.map((item: any) => ({
+             const comboSquads: ComboboxData[] = data.list.map((item: any) => ({
                 id: item.escIdEscuadra,
                 value: item.escNombre,
             }));
 
-            dispatch(onSetSquadsList(comboSquads));
+            let filteredSquads: ComboboxData[] = [];
+
+            if (user!.rol === 1) {
+                // Si es Rol 1, tiene acceso total
+                filteredSquads = comboSquads;
+            } else {
+                // Si no es Rol 1, filtramos comboSquads basándonos en user.squadIdList
+                // Usamos .includes para verificar si el id del squad está en la lista permitida del usuario
+                filteredSquads = comboSquads.filter(squad =>
+                    user!.squadIdList.includes(squad.id)
+                );
+            }
+
+            dispatch(onSetSquadsList(filteredSquads));
         } catch (error) {
             dispatch(onSetErrorGeneralSlice((error as Error).message))
         }

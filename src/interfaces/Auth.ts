@@ -8,6 +8,8 @@ interface Auth {
   token: string;
   username: string;
   area: string;
+  rol: number;
+  squadIdList: number[];
 }
 
 export default Auth;

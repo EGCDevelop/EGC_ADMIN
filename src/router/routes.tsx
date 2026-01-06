@@ -10,6 +10,7 @@ interface Route {
   component: LazyExoticComponent<JSXComponent> | JSXComponent;
   name: string;
   icon: React.JSX.Element;
+  roles: number[];
 }
 
 const memberPage = lazy(() => import("../pages/members/MemberPage"));
@@ -23,6 +24,7 @@ export const routes: Route[] = [
     component: dashboardPage,
     name: "Dashboard",
     icon: <FaChartSimple className="icon" />,
+    roles: [1]
   },
   {
     to: "/usuarios",
@@ -30,6 +32,7 @@ export const routes: Route[] = [
     component: memberPage,
     name: "Usuarios",
     icon: <FaUserGroup className="icon" />,
+    roles: [1, 2, 3]
   },
   {
     to: "/profile",
@@ -37,5 +40,6 @@ export const routes: Route[] = [
     component: profilePage,
     name: "Mi Perfil",
     icon: <FaTools className="icon" />,
+    roles: [1, 2, 3]
   },
 ];

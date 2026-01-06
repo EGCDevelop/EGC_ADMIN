@@ -24,7 +24,6 @@ export const useAuthStore = () => {
         version: version,
       };
 
-
       const response = await fetch(`${apiUrl}/Login/login`, {
         method: "POST",
         headers: {
@@ -55,7 +54,9 @@ export const useAuthStore = () => {
         idPuesto: data.idPuesto,
         token: data.token,
         username: data.username,
-        area: data.area
+        area: data.area,
+        rol: data.rol,
+        squadIdList: data.squadIdList
       };
 
       localStorage.setItem("data-egc-admin", JSON.stringify(userData));
@@ -99,7 +100,9 @@ export const useAuthStore = () => {
       idPuesto: data.idPuesto,
       token: data.token,
       username: data.username,
-      area: data.area
+      area: data.area,
+      rol: data.rol,
+      squadIdList: data.squadIdList
     };
     dispatch(onLogin(userData));
 
