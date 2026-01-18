@@ -1,14 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
-import { onLoadingInstructors, onSetAssignedSquadsInstructors, onSetErrorMessageInstructors, onUpdateDataInstructor, onUpdatePasswordInstructror } from "../store/instructors/instructorsSlice";
+import { onInstructorCreated, onLoadingInstructors, onSetAssignedSquadsInstructors, onSetErrorMessageInstructors, onSetInstructorDataList, onUpdateDataInstructor, onUpdatePasswordInstructror } from "../store/instructors/instructorsSlice";
 import EscuadrasInstructoresDTO from "../interfaces/EscuadrasInstructoresDTO";
 import ProfileINT from "../interfaces/ProfileINT";
+import Instructor from "../interfaces/Instructor";
+import INewInstructorDataForm from "../interfaces/INewInstructorDataForm";
+import IAssignedSquad from "../interfaces/IAssignedSquad";
 
 const apiUrl = Config.apiUrl;
 
 export const useInstructorsStore = () => {
-    const { assignedSquads, isLoadingInstructorsSlice, isInstructorDataUpdate, isPasswordInstructorUpdate, errorMessageInstructors } = useSelector((state: RootState) => state.instructors);
+    const {
+        assignedSquads,
+        instructorDataList,
+        isLoadingInstructorsSlice,
+        isInstructorDataUpdate,
+        isPasswordInstructorUpdate,
+        isInstructorCreated,
+        errorMessageInstructors
+    } = useSelector((state: RootState) => state.instructors);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -33,7 +44,7 @@ export const useInstructorsStore = () => {
                 return;
             }
 
-            // ✅ Convertir la respuesta a lista de EscuadrasInstructoresDTO
+            // Convertir la respuesta a lista de EscuadrasInstructoresDTO
             const assignedSquads: EscuadrasInstructoresDTO[] = json.data.map(
                 (item: any) => ({
                     id: item.id,
@@ -45,6 +56,36 @@ export const useInstructorsStore = () => {
             );
 
             dispatch(onSetAssignedSquadsInstructors(assignedSquads));
+        } catch (error) {
+            dispatch(onSetErrorMessageInstructors((error as Error).message));
+        }
+    }
+
+    const GetInstructor = async (state: number, puesto: number, like?: string) => {
+        dispatch(onLoadingInstructors());
+
+        try {
+            const queryParams = new URLSearchParams();
+            if (like) queryParams.append("like", like);
+            queryParams.append("state", state.toString());
+            queryParams.append("puesto", puesto.toString());
+
+            const response = await fetch(`${apiUrl}/Instructor/get_instructor?${queryParams.toString()}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.ok) {
+                dispatch(onSetErrorMessageInstructors(data.message || "Error al obtener integrantes"))
+                return;
+            }
+
+            const mapped: Instructor[] = data.list ?? [];
+            dispatch(onSetInstructorDataList(mapped));
         } catch (error) {
             dispatch(onSetErrorMessageInstructors((error as Error).message));
         }
@@ -127,16 +168,103 @@ export const useInstructorsStore = () => {
         }
     }
 
+    const CreateInstructor = async (formData: INewInstructorDataForm, assignedSquads: IAssignedSquad[]) => {
+        dispatch(onLoadingInstructors());
+
+        try {
+            const payload = {
+                name: formData.name,
+                lastName: formData.lastName,
+                email: formData.email,
+                tel: formData.tel,
+                username: formData.username,
+                password: formData.password,
+                position: formData.position,
+                area: formData.area,
+                rol: formData.rol,
+                state: formData.state,
+                squads: assignedSquads
+            };
+
+            const response = await fetch(`${apiUrl}/Instructor/create_instructor`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) throw new Error("Error al crear el instructor");
+
+            const json = await response.json();
+
+            if (json.ok) {
+                dispatch(onInstructorCreated(json.ok === true));
+            } else {
+                dispatch(onSetErrorMessageInstructors(json.message || "Error en el servidor"));
+            }
+
+        } catch (error) {
+            dispatch(onSetErrorMessageInstructors((error as Error).message));
+        }
+    }
+
+    const UpdateInstructor = async (formData: INewInstructorDataForm, assignedSquads: IAssignedSquad[]) => {
+        dispatch(onLoadingInstructors());
+
+        try {
+            const payload = {
+                id: formData.id,
+                name: formData.name,
+                lastName: formData.lastName,
+                email: formData.email,
+                tel: formData.tel,
+                username: formData.username,
+                password: formData.password,
+                position: formData.position,
+                area: formData.area,
+                rol: formData.rol,
+                state: formData.state,
+                squads: assignedSquads
+            };
+
+            const response = await fetch(`${apiUrl}/Instructor/update_instructor`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) throw new Error("Error al crear el instructor");
+
+            const json = await response.json();
+
+            if (json.ok) {
+                dispatch(onUpdateDataInstructor(json.ok === true));
+            } else {
+                dispatch(onSetErrorMessageInstructors(json.message || "Error en el servidor"));
+            }
+
+        } catch (error) {
+            dispatch(onSetErrorMessageInstructors((error as Error).message));
+        }
+    }
     return {
         assignedSquads,
         isLoadingInstructorsSlice,
         isInstructorDataUpdate,
         isPasswordInstructorUpdate,
         errorMessageInstructors,
+        instructorDataList,
+        isInstructorCreated,
 
         GetAssignedSquadsInstructors,
         UpdateInstructorProfile,
-        ChangePasswordInstructor
+        ChangePasswordInstructor,
+        GetInstructor,
+        CreateInstructor,
+        UpdateInstructor
     }
 
 }

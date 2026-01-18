@@ -1,0 +1,178 @@
+.container-main-instructor-page {
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.content-instructor-page {
+    background-color: #fff;
+    padding: 1rem;
+    width: 90%;
+    max-width: 1000px;
+    height: 90%;
+    max-height: 850px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.container-header-instructor-page {
+    padding: 0.7rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1efef;
+}
+
+.container-asigned-squads-instructor-page {
+    display: flex;
+}
+
+.container-form-asigned-squads-instructor-page {
+    width: 100%;
+    padding: 1rem 10px;
+    background-color: #f5f6f8;
+    box-shadow: 0 0 0 1px #e2e2e2;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-form-option-asigned-squads-instructor-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.container-radio-asigned-squads-instructor-page {
+    padding: 10px;
+    box-shadow: 0 0 0 1px #e2e2e2;
+    border-radius: 10px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.container-radio-asigned-squads-instructor-page:hover {
+    box-shadow: 0 0 0 1px var(--color-blue);
+}
+
+.container-radio-asigned-squads-instructor-page>div.option-selected {
+    background-color: var(--color-blue);
+    box-shadow: 0 0 0 1px var(--color-blue);
+}
+
+.container-radio-asigned-squads-instructor-page>div {
+    box-shadow: 0 0 0 1px #6a6868;
+    padding: 9px;
+    border-radius: 50px;
+}
+
+.container-radio-asigned-squads-instructor-page>p {
+    flex: 1;
+    text-align: center;
+    font-weight: 500;
+    font-size: clamp(0.8rem, 4vw, 1rem);
+}
+
+.content-form-option-asigned-squads-instructor-page>button {
+    background-color: var(--color-blue);
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.container-asigned-squads-list-instructor-page {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.content-squads-list-instructor-page .close {
+    color: #b72121;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    padding: 7px;
+    border-radius: 7px;
+}
+
+.content-squads-list-instructor-page .close:hover {
+    background-color: #fddede;
+}
+
+.content-squads-list-instructor-page {
+    background-color: #fff;
+    box-shadow: 0 0 0 1px #e2e2e2;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.content-squads-list-instructor-page.principal {
+    box-shadow: 0 0 0 1px var(--color-blue);
+}
+
+.principal-asigned-squads-instructor {
+    background-color: #dfedff;
+    color: var(--color-blue);
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+.content-squads-list-instructor-page .icon {
+    color: var(--color-blue);
+}
+
+.content-squads-list-instructor-page>p:nth-child(3) {
+    padding: 10px 1.1rem;
+}
+
+@media screen and (min-width: 1024px) {
+    .container-form-asigned-squads-instructor-page {
+        flex-direction: row;
+        padding: 1.5rem 1rem;
+    }
+
+    .content-form-option-asigned-squads-instructor-page {
+        flex: 1;
+    }
+
+    .container-asigned-squads-list-instructor-page {
+        flex: 1;
+        padding: 1rem 4rem;
+        overflow-y: scroll;
+        max-height: 250px;
+    }
+
+    .content-squads-list-instructor-page {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin: auto 0;
+        padding: 12px;
+    }
+
+    .container-radio-asigned-squads-instructor-page {
+        padding: 1rem;
+    }
+
+    .form-instructor-page {
+        padding: 1.8rem 0 0;
+    }
+}

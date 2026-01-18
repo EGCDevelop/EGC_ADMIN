@@ -128,17 +128,19 @@
 
 .form-footer-member-modal {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column-reverse;
+  gap: 1rem;
   padding: 0.7rem 12px;
 }
 
 .form-footer-member-modal > button {
-  padding: 11px 1.2rem;
+  padding: 14px 1.2rem;
   font-size: clamp(14px, 1.3vw, 1rem);
   font-weight: 500;
   border-radius: 10px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   cursor: pointer;
 }
@@ -203,8 +205,12 @@
   }
 
   .form-footer-member-modal {
-    display: flex;
+    flex-direction: row;
     justify-content: flex-end;
     gap: 1.5rem;
+  }
+
+  .form-footer-member-modal > button:nth-child(2) {
+    padding: 14px 2.5rem;
   }
 }

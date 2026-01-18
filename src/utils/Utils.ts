@@ -40,6 +40,71 @@ class Utils {
     return stateData;
   }
 
+  public static instructorStateDataList = (): ComboboxData[] => {
+    const stateData: ComboboxData[] = [
+      {
+        id: 1,
+        value: "Activo",
+      },
+      {
+        id: 2,
+        value: "Inactivo",
+      },
+    ];
+
+    return stateData;
+  }
+
+  public static rolInstructorCombobox = (): ComboboxData[] => {
+    return [
+      {
+        id: 1,
+        value: "Admin"
+      },
+      {
+        id: 2,
+        value: "Instructor"
+      },
+      {
+        id: 3,
+        value: "Apoyo"
+      }
+    ];
+  }
+
+  public static instructorAreaCombobox = (): ComboboxData[] => {
+    return [
+      {
+        id: 1,
+        value: "Percusión"
+      },
+      {
+        id: 2,
+        value: "Gastadores"
+      },
+      {
+        id: 3,
+        value: "Batonistas"
+      },
+      {
+        id: 4,
+        value: "Vientos"
+      },
+      {
+        id: 5,
+        value: "Liras"
+      },
+      {
+        id: 6,
+        value: "Bombos"
+      },
+      {
+        id: 7,
+        value: "General"
+      }
+    ];
+  }
+
   public static getPassword = (squadId: number): string => {
     let password: string = "";
     switch (squadId) {

@@ -19,9 +19,9 @@ import Utils from "../../utils/Utils";
 import { useForm } from "../../hooks/useForm";
 import { useMemberStore } from "../../hooks/useMemberStore";
 import { useDebounce } from "../../hooks/useDebounce";
-import "./styles/member-page.css";
 import MemberDTO from "../../interfaces/MemberDTO";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import "./styles/member-page.css";
 
 interface DataFilter {
   name: string;

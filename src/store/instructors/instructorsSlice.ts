@@ -1,19 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import EscuadrasInstructoresDTO from "../../interfaces/EscuadrasInstructoresDTO";
+import Instructor from "../../interfaces/Instructor";
 
 interface InstructorsSlice {
     isLoadingInstructorsSlice: boolean;
     assignedSquads: EscuadrasInstructoresDTO[];
+    instructorDataList: Instructor[];
     errorMessageInstructors?: string;
     isInstructorDataUpdate: boolean;
+    isInstructorCreated: boolean;
     isPasswordInstructorUpdate: boolean;
 }
 
 const initialState: InstructorsSlice = {
     isLoadingInstructorsSlice: false,
     assignedSquads: [],
+    instructorDataList: [],
     errorMessageInstructors: undefined,
     isInstructorDataUpdate: false,
+    isInstructorCreated: false,
     isPasswordInstructorUpdate: false,
 }
 
@@ -24,6 +29,8 @@ export const instructorsSlice = createSlice({
         onLoadingInstructors: (state) => {
             state.isLoadingInstructorsSlice = true;
             state.assignedSquads = [];
+            state.instructorDataList = [];
+            state.isInstructorDataUpdate = false;
             state.isInstructorDataUpdate = false;
             state.errorMessageInstructors = undefined;
         },
@@ -35,10 +42,16 @@ export const instructorsSlice = createSlice({
             state.errorMessageInstructors = undefined;
         },
 
+        onSetInstructorDataList: (state, action: PayloadAction<Instructor[]>) => {
+            state.isLoadingInstructorsSlice = false;
+            state.instructorDataList = action.payload;
+            state.errorMessageInstructors = undefined;
+
+        },
+
         onUpdateDataInstructor: (state, action: PayloadAction<boolean>) => {
             state.isLoadingInstructorsSlice = false;
             state.isInstructorDataUpdate = action.payload;
-            state.isPasswordInstructorUpdate = false;
             state.errorMessageInstructors = undefined;
         },
 
@@ -49,6 +62,11 @@ export const instructorsSlice = createSlice({
             state.errorMessageInstructors = undefined;
         },
 
+        onInstructorCreated: (state, action: PayloadAction<boolean>) => {
+            state.isLoadingInstructorsSlice = false;
+            state.isInstructorCreated = action.payload;
+        },
+
         onSetErrorMessageInstructors: (state, action: PayloadAction<string>) => {
             state.isLoadingInstructorsSlice = false;
             state.assignedSquads = [];
@@ -57,5 +75,12 @@ export const instructorsSlice = createSlice({
     }
 });
 
-export const { onLoadingInstructors, onSetAssignedSquadsInstructors, onUpdateDataInstructor, onUpdatePasswordInstructror, onSetErrorMessageInstructors } = instructorsSlice.actions;
+export const {
+    onLoadingInstructors,
+    onSetAssignedSquadsInstructors,
+    onSetInstructorDataList,
+    onUpdateDataInstructor,
+    onUpdatePasswordInstructror,
+    onSetErrorMessageInstructors,
+    onInstructorCreated } = instructorsSlice.actions;
 export default instructorsSlice.reducer;
