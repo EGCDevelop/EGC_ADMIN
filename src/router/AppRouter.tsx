@@ -8,6 +8,7 @@ import DashboardPage from "../pages/dashboard/DashboardPage";
 import MemberPage from "../pages/members/MemberPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import InstructorsPage from "../pages/instructors/InstructorsPage";
+import { ConnectionsPage } from "../pages/conections/ConnectionsPage";
 
 export const AppRouter = () => {
   const { status, user, checkAuth } = useAuthStore();
@@ -36,6 +37,7 @@ export const AppRouter = () => {
                 <Route path="usuarios" element={<MemberPage />} />
                 <Route path="instructors" element={<InstructorsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="connections" element={<ConnectionsPage />} />
                 <Route path="/*" element={<Navigate to="/dashboard" />} />
               </>
             )}

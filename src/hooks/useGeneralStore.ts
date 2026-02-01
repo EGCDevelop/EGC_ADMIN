@@ -123,7 +123,7 @@ export const useGeneralStore = () => {
                 return;
             }
 
-             const comboSquads: ComboboxData[] = data.list.map((item: any) => ({
+            const comboSquads: ComboboxData[] = data.list.map((item: any) => ({
                 id: item.escIdEscuadra,
                 value: item.escNombre,
             }));
@@ -132,6 +132,10 @@ export const useGeneralStore = () => {
 
             if (user!.rol === 1) {
                 // Si es Rol 1, tiene acceso total
+                comboSquads.unshift({
+                    id: 11,
+                    value: 'Generales'
+                });
                 filteredSquads = comboSquads;
             } else {
                 // Si no es Rol 1, filtramos comboSquads basándonos en user.squadIdList

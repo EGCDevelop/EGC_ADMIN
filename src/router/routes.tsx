@@ -17,6 +17,8 @@ const memberPage = lazy(() => import("../pages/members/MemberPage"));
 const dashboardPage = lazy(() => import("../pages/dashboard/DashboardPage"));
 const profilePage = lazy(() => import("../pages/profile/ProfilePage"));
 const instructorsPage = lazy(() => import("../pages/instructors/InstructorsPage"));
+//const connectionsPage = lazy(() => import("../pages/conections/ConnectionsPage"));
+
 
 export const routes: Route[] = [
   {
@@ -51,4 +53,12 @@ export const routes: Route[] = [
     icon: <FaTools className="icon" />,
     roles: [1, 2, 3]
   },
+  // {
+  //   to: "/connections",
+  //   path: "connections",
+  //   component: connectionsPage,
+  //   name: "Conexiones",
+  //   icon: <FaTools className="icon" />,
+  //   roles: [1]
+  // },
 ];
