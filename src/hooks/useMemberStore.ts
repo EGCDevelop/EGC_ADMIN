@@ -1,17 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import Config from "../utils/Config";
 import { AppDispatch, RootState } from "../store/store";
-import { onCreateMember, onLoadingMemberSlice, onResetStates, onSetErrorMemberSlice, onSetMemberDataList, onUpdateMember, onUpdateMemberStaste } from "../store/member/memberSlice";
+import { onCreateMember, onLoadingMemberSlice, onResetStates, onSetChangeMemberPassword, onSetErrorMemberSlice, onSetMemberDataList, onUpdateMember, onUpdateMemberStaste } from "../store/member/memberSlice";
 import Member from "../interfaces/Member";
 import Utils from "../utils/Utils";
 import { useAuthStore } from "./useAuthStore";
+import MemberDTO from "../interfaces/MemberDTO";
 
 const apiUrl = Config.apiUrl;
 
 export const useMemberStore = () => {
     const { isLoadingMemberSlice, memberDataList, lastCreate, lastUpdate,
-        changeMemberState, errorMemberSliceMessage } = useSelector((state: RootState) => state.member);
-        const { user } = useAuthStore();
+        changeMemberState, errorMemberSliceMessage, changeMemberPassword } = useSelector((state: RootState) => state.member);
+    const { user } = useAuthStore();
 
 
     const dispatch = useDispatch<AppDispatch>();
@@ -214,6 +215,39 @@ export const useMemberStore = () => {
         }
     }
 
+    const MemberChangePassword = async (member: MemberDTO) => {
+        dispatch(onLoadingMemberSlice());
+
+        try {
+            const jsonData = {
+                username: member.intUsuario,
+                password: Utils.getPassword(member.intescIdEscuadra)
+            }
+
+            console.log(jsonData)
+
+            const response = await fetch(`${apiUrl}/Login/change_password`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.ok) {
+                dispatch(onSetErrorMemberSlice(result.message || "Error al crear integrante"))
+                return;
+            }
+
+            dispatch(onSetChangeMemberPassword(result.ok === true));
+        } catch (error) {
+            dispatch(onSetErrorMemberSlice((error as Error).message));
+        }
+    }
+
     const ResetState = () => dispatch(onResetStates());
 
     return {
@@ -223,11 +257,13 @@ export const useMemberStore = () => {
         lastCreate,
         lastUpdate,
         changeMemberState,
+        changeMemberPassword,
 
         GetMemberForInstructor,
         InsertMember,
         UpdateMember,
         UpdateMemberState,
-        ResetState
+        ResetState,
+        MemberChangePassword
     }
 }

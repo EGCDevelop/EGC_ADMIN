@@ -6,7 +6,7 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { FaPenToSquare } from "react-icons/fa6";
+import { FaLock, FaPenToSquare } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { MemberModal } from "./components/MemberModal";
 import { CancelMemberModal } from "./components/CancelMemberModal";
@@ -20,7 +20,6 @@ import { useForm } from "../../hooks/useForm";
 import { useMemberStore } from "../../hooks/useMemberStore";
 import { useDebounce } from "../../hooks/useDebounce";
 import MemberDTO from "../../interfaces/MemberDTO";
-import { useAuthStore } from "../../hooks/useAuthStore";
 import "./styles/member-page.css";
 
 interface DataFilter {
@@ -60,12 +59,20 @@ const resetMemberData: MemberDTO = {
 }
 
 export const MemberPage = () => {
-  const { isLoadingMemberSlice, errorMemberSliceMessage, memberDataList,
-    lastCreate, lastUpdate, changeMemberState, GetMemberForInstructor, ResetState } = useMemberStore();
+  const {
+    isLoadingMemberSlice,
+    memberDataList,
+    lastCreate,
+    lastUpdate,
+    changeMemberState,
+    errorMemberSliceMessage,
+    changeMemberPassword,
+    GetMemberForInstructor,
+    MemberChangePassword,
+    ResetState } = useMemberStore();
   const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
     positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition } = useGeneralStore();
-  const { user } = useAuthStore();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [memberDataUpdate, setMemberDataUpdate] = useState<MemberDTO>(resetMemberData);
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
@@ -171,6 +178,17 @@ export const MemberPage = () => {
   }, [changeMemberState])
 
   useEffect(() => {
+    if (changeMemberPassword) {
+      setAlert({
+        title: "Exito",
+        message: "Contraseña modificada exitosamente",
+        status: "success"
+      });
+      ResetState();
+    }
+  }, [changeMemberPassword]);
+
+  useEffect(() => {
     GetMemberForInstructor(
       debouncedName,
       formData.squad,
@@ -209,19 +227,17 @@ export const MemberPage = () => {
               <p>Total de usuarios</p>
               <span>{memberDataList.length}</span>
             </div>
-            {
-              user!.rol !== 3 && <button
-                type="button"
-                className="member-page-add-button"
-                onClick={() => {
-                  setMemberDataUpdate(resetMemberData);
-                  setOpenModal(true);
-                }}
-              >
-                <FaPlus />
-                Nuevo
-              </button>
-            }
+            <button
+              type="button"
+              className="member-page-add-button"
+              onClick={() => {
+                setMemberDataUpdate(resetMemberData);
+                setOpenModal(true);
+              }}
+            >
+              <FaPlus />
+              Nuevo
+            </button>
           </div>
         </div>
 
@@ -336,17 +352,21 @@ export const MemberPage = () => {
                       <button type="button" onClick={() => Utils.downloadQR(data.intIdIntegrante.toString(), "png")}>
                         <FaDownload /> Descargar QR
                       </button>
-                      {
-                        user!.rol !== 3 && <button
-                          type="button"
-                          onClick={() => {
-                            setMemberDataUpdate(data);
-                            setOpenCancelModal(true)
-                          }}
-                        >
-                          <FaTrash /> Dar baja
-                        </button>
-                      }
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMemberDataUpdate(data);
+                          setOpenCancelModal(true)
+                        }}
+                      >
+                        <FaTrash /> Dar baja
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => MemberChangePassword(data)}
+                      >
+                        <FaLock /> Change Pass
+                      </button>
 
                     </div>
                   </div>

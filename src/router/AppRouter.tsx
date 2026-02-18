@@ -47,6 +47,7 @@ export const AppRouter = () => {
               <>
                 <Route index element={<Navigate to="/profile" />} />
                 <Route path="usuarios" element={<MemberPage />} />
+                <Route path="instructors" element={<InstructorsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="/*" element={<Navigate to="/profile" />} />
               </>

@@ -61,7 +61,8 @@ export const useInstructorsStore = () => {
         }
     }
 
-    const GetInstructor = async (state: number, puesto: number, like?: string) => {
+    const GetInstructor = async (state: number, puesto: number,
+        usuarioId: number, like?: string) => {
         dispatch(onLoadingInstructors());
 
         try {
@@ -69,6 +70,8 @@ export const useInstructorsStore = () => {
             if (like) queryParams.append("like", like);
             queryParams.append("state", state.toString());
             queryParams.append("puesto", puesto.toString());
+            queryParams.append("usuarioId", usuarioId.toString());
+
 
             const response = await fetch(`${apiUrl}/Instructor/get_instructor?${queryParams.toString()}`, {
                 method: "GET",

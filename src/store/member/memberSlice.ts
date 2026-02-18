@@ -7,6 +7,7 @@ interface MemberSlice {
     lastCreate?: boolean;
     lastUpdate?: boolean;
     changeMemberState?: boolean;
+    changeMemberPassword: boolean;
     errorMemberSliceMessage?: string;
 }
 
@@ -16,6 +17,7 @@ const initialState: MemberSlice = {
     lastCreate: false,
     lastUpdate: false,
     changeMemberState: false,
+    changeMemberPassword: false,
     errorMemberSliceMessage: undefined
 }
 
@@ -57,10 +59,16 @@ export const memberSlice = createSlice({
             state.errorMemberSliceMessage = action.payload;
         },
 
+        onSetChangeMemberPassword: (state, action: PayloadAction<boolean>) => {
+            state.isLoadingMemberSlice = false;
+            state.changeMemberPassword = action.payload;
+        },
+
         onResetStates: (state) => {
             state.lastCreate = false;
             state.lastUpdate = false;
             state.changeMemberState = false;
+            state.changeMemberPassword = false;
         }
     }
 });
@@ -72,6 +80,7 @@ export const {
     onCreateMember,
     onUpdateMember,
     onUpdateMemberStaste,
-    onResetStates
+    onSetChangeMemberPassword,
+    onResetStates,
 } = memberSlice.actions;
 export default memberSlice.reducer;

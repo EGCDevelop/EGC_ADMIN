@@ -138,6 +138,9 @@ class Utils {
       case 10:
         password = "bom1234"
         break;
+      case 11:
+        password = "gen1234"
+        break;
       case 12:
         password = "gas1234"
         break;

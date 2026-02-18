@@ -13,6 +13,7 @@ import IAssignedSquad from '../../../interfaces/IAssignedSquad';
 import { useInstructorsStore } from '../../../hooks/useInstructorsStore';
 import Instructor from '../../../interfaces/Instructor';
 import '../styles/instructor-model.css';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 
 interface Props {
     dataUpdate: Instructor | null;
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
+    const { user } = useAuthStore();
     const { 
         isLoadingInstructorsSlice, 
         errorMessageInstructors, 
@@ -352,6 +354,7 @@ export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
                                             initValue
                                             onChange={onSelectChange}
                                             errorMessage={errors.position}
+                                            disabled={user!.rol !== 1}
                                         />
                                     </div>
                                     <div className="container-input-member-modal">
@@ -364,6 +367,7 @@ export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
                                             value={formData.area}
                                             onChange={onChange}
                                             errorMessage={errors.area}
+                                            disabled={user!.rol !== 1}
                                         />
                                     </div>
                                     <div className="container-input-member-modal">
@@ -377,6 +381,7 @@ export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
                                             value={formData.rol}
                                             onChange={onSelectChange}
                                             errorMessage={errors.rol}
+                                            disabled={user!.rol !== 1}
                                         />
                                     </div>
                                     <div className="container-input-member-modal">
@@ -389,7 +394,6 @@ export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
                                             value={formData.state}
                                             onChange={onSelectChange}
                                             errorMessage={errors.state}
-                                            disabled={formData.id === 0}
                                         />
                                     </div>
                                 </div>

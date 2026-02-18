@@ -14,6 +14,7 @@ import { CustomAlert } from "../components/CustomAlert";
 import './styles/instructors-page.css';
 import EscuadrasInstructoresDTO from "../../interfaces/EscuadrasInstructoresDTO";
 import Instructor from "../../interfaces/Instructor";
+import { useAuthStore } from "../../hooks/useAuthStore";
 
 interface DataFilter {
     name: string;
@@ -22,6 +23,7 @@ interface DataFilter {
 }
 
 export const InstructorsPage = () => {
+    const { user } = useAuthStore();
     const {
         isLoadingInstructorsSlice,
         instructorDataList,
@@ -108,8 +110,10 @@ export const InstructorsPage = () => {
     }, []);
 
     useEffect(() => {
-        GetInstructor(formData.state, formData.position, nameDebounced);
-    }, [formData.state, formData.position, nameDebounced, isInstructorCreated, isInstructorDataUpdate]);
+        if (user) {
+            GetInstructor(formData.state, formData.position, user.id, nameDebounced);
+        }
+    }, [formData.state, formData.position, nameDebounced, isInstructorCreated, isInstructorDataUpdate, user]);
 
     useEffect(() => {
         if (errorMessage) {
@@ -175,14 +179,18 @@ export const InstructorsPage = () => {
                             <p>Personal</p>
                             <span>{instructorDataList.length}</span>
                         </div>
-                        <button
-                            type="button"
-                            className="member-page-add-button"
-                            onClick={() => onHandleOpenModal(null)}
-                        >
-                            <FaPlus />
-                            Nuevo
-                        </button>
+                        {
+                            user!.rol === 1 &&
+                            <button
+                                type="button"
+                                className="member-page-add-button"
+                                onClick={() => onHandleOpenModal(null)}
+                            >
+                                <FaPlus />
+                                Nuevo
+                            </button>
+                        }
+
                     </div>
                 </div>
 
@@ -244,7 +252,7 @@ export const InstructorsPage = () => {
                                 <div className="content-band-info-card-instructor-page">
                                     <div className="row-band-info-card-instructor-page">
                                         <p>Puesto:</p>
-                                        <span>{instructor.idPuesto === 2 ? 'Instructor' : 'Apoyo'}</span>
+                                        <span>{instructor.idPuesto === 2 ? 'Instructor' : instructor.idPuesto === 1 ? 'General' : 'Apoyo'}</span>
                                     </div>
                                     <div className="row-band-info-card-instructor-page">
                                         <p>Área:</p>
