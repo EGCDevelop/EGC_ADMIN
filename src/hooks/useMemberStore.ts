@@ -25,11 +25,11 @@ export const useMemberStore = () => {
 
         try {
             const queryParams = new URLSearchParams();
+            const newState = isNew === 3 ? 1 : isNew === 1 ? 3 : 0;
 
             if (like) queryParams.append("like", like);
-            //if (squadId !== undefined) queryParams.append("squadId", squadId.toString());
             if (schoolId !== undefined) queryParams.append("schoolId", schoolId.toString());
-            if (isNew !== undefined) queryParams.append("isNew", isNew.toString());
+            if (newState !== undefined) queryParams.append("isNew", newState.toString());
             if (memberState !== undefined) queryParams.append("memberState", memberState.toString());
             if (career !== undefined) queryParams.append("career", career.toString());
             if (positionId !== undefined) queryParams.append("positionId", positionId.toString());
@@ -98,7 +98,9 @@ export const useMemberStore = () => {
 
                 fatherName: Utils.normalize(data.nombreEncargado),
                 fatherCell: Utils.normalize(data.telefonoEncargado),
-                username: createUsername
+                username: createUsername,
+                complicacionMedica: data.complicacionMedica,
+                descripcionComplicacionMedica: data.descripcionComplicacionMedica
             };
 
             const response = await fetch(`${apiUrl}/Member/insert_member`, {
@@ -158,7 +160,9 @@ export const useMemberStore = () => {
                 fatherName: data.nombreEncargado,
                 fatherCell: data.telefonoEncargado,
                 username: createUsername?.toLocaleLowerCase(),
-                password: createPassword
+                password: createPassword,
+                complicacionMedica: data.complicacionMedica,
+                descripcionComplicacionMedica: data.descripcionComplicacionMedica
             };
 
             const response = await fetch(`${apiUrl}/Member/update_member`, {

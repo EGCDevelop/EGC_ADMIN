@@ -6,7 +6,7 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { FaLock, FaPenToSquare } from "react-icons/fa6";
+import { FaBriefcaseMedical, FaLock, FaPenToSquare } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { MemberModal } from "./components/MemberModal";
 import { CancelMemberModal } from "./components/CancelMemberModal";
@@ -55,7 +55,9 @@ const resetMemberData: MemberDTO = {
   intEstadoIntegrante: 1,
   intpuIdPuesto: 8,
   puNombre: "",
-  intUsuario: ""
+  intUsuario: "",
+  complicacionMedica: 2,
+  descripcionComplicacionMedica: ""
 }
 
 export const MemberPage = () => {
@@ -324,7 +326,7 @@ export const MemberPage = () => {
             {/* Filas */}
             {paginatedData.map((data) => (
               <div className="member-page-table-row" key={data.intIdIntegrante}>
-                <div className="cell">{data.intNombres.concat(" ").concat(data.intApellidos)}</div>
+                <div className="cell">{data.intNombres.concat(" ").concat(data.intApellidos)}{data.complicacionMedica === 1 && <FaBriefcaseMedical className="medical-icon" />}</div>
                 <div className="cell">{data.estNombreEstablecimiento}</div>
                 <div className="cell">
                   <p className="cell-squad">{data.escNombre}</p>

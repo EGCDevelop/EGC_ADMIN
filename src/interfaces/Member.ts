@@ -18,6 +18,8 @@ interface Member {
   estadoIntegrante: number;
   nombreEncargado: string;
   telefonoEncargado: string;
+  complicacionMedica: number;
+  descripcionComplicacionMedica: string | null;
 }
 
 export default Member;

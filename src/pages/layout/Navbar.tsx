@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { routes } from "../../router/routes";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import logo from '../../assets/egc.jpeg';
+import Utils from "../../utils/Utils";
 
 export const Navbar = () => {
   const { user, startLogout } = useAuthStore();
@@ -25,7 +26,6 @@ export const Navbar = () => {
 
       <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
         <div className="sidebar-header">
-          {/* <img src="/egc.jpeg" alt="Logo" className="logo" /> */}
           <img src={logo} alt="egc.jpeg" className="logo" />
           <h2>EGC Admin</h2>
         </div>
@@ -48,8 +48,8 @@ export const Navbar = () => {
           <div className="menu-continer-instructor">
             <FaUser className="icon" />
             <div className="menu-instructor-info">
-              <span>Erick Osoy</span>
-              <p>Administrador</p>
+              <span>{user?.nombre.split(" ")[0]} {user?.apellido.split(" ")[0]}</span>
+              <p>{Utils.getInstructorRolName(user!.rol)}</p>
             </div>
           </div>
 

@@ -23,6 +23,8 @@ interface MemberDTO {
     intpuIdPuesto: number;
     puNombre: string;
     intUsuario?: string;
+    complicacionMedica: number;
+    descripcionComplicacionMedica: string | null;
 }
 
 export default MemberDTO;

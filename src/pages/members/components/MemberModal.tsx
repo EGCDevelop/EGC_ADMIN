@@ -1,17 +1,18 @@
+import { FormEvent, useEffect, useState } from "react";
+import { useForm } from "../../../hooks/useForm";
 import { FaQrcode, FaTimes } from "react-icons/fa";
 import { FaFloppyDisk, FaXmark } from "react-icons/fa6";
 import { CustomInput } from "../../components/CustomInput";
 import { CustomSelect } from "../../components/CustomSelect";
-import ComboboxData from "../../../interfaces/ComboboxData";
-import { useForm } from "../../../hooks/useForm";
-import Member from "../../../interfaces/Member";
-import { FormEvent, useEffect, useState } from "react";
 import { QRComponent } from "../../components/QRComponent";
 import { useGeneralStore } from "../../../hooks/useGeneralStore";
 import { CustomLoader } from "../../components/CustomLoader";
-import Utils from "../../../utils/Utils";
 import { useMemberStore } from "../../../hooks/useMemberStore";
 import { CustomAlert } from "../../components/CustomAlert";
+import { CustomTextarea } from "../../components/CustomTextarea";
+import ComboboxData from "../../../interfaces/ComboboxData";
+import Member from "../../../interfaces/Member";
+import Utils from "../../../utils/Utils";
 import MemberDTO from "../../../interfaces/MemberDTO";
 import "../styles/member-modal.css";
 
@@ -36,7 +37,7 @@ export const MemberModal = ({ member, onClose }: Props) => {
     positionList, degreesList, errorMessage, GetEstablishment, GetCareer, GetSquads,
     GetPosition, GetDegrees } = useGeneralStore();
   const { isLoadingMemberSlice, errorMemberSliceMessage, InsertMember, UpdateMember } = useMemberStore();
-  const { formData, setFormData, onChange, onSelectChange } = useForm<Member>({
+  const { formData, setFormData, onChange, onSelectChange, onTextAreaChange } = useForm<Member>({
     idIntegrante: 0,
     nombres: "",
     apellidos: "",
@@ -56,6 +57,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
     estadoIntegrante: 1,
     nombreEncargado: "",
     telefonoEncargado: "",
+    complicacionMedica: 2,
+    descripcionComplicacionMedica: ""
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -63,6 +66,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
     useState<boolean>(false);
   const [showOtherCareer, setShowOtherCareer] = useState<boolean>(false);
   const [showOtherDegree, setShowOtherDegree] = useState<boolean>(false);
+  const [showMedicalConditions, setShowMedicalConditions] =
+    useState<boolean>(false);
 
   const [alert, setAlert] = useState<{
     title: string;
@@ -174,6 +179,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
         estadoIntegrante: member.intEstadoIntegrante || 1,
         nombreEncargado: member.intNombreEncargado || "",
         telefonoEncargado: member.intTelefonoEncargado || "",
+        complicacionMedica: member.complicacionMedica ?? 2,
+        descripcionComplicacionMedica: member.descripcionComplicacionMedica || ""
       });
     }
   }, [member]);
@@ -274,6 +281,37 @@ export const MemberModal = ({ member, onClose }: Props) => {
                       errorMessage={errors.telefono}
                     />
                   </div>
+                  <div className="container-input-member-modal">
+                    <CustomSelect
+                      key="complicacionMedica"
+                      label="Situación médica"
+                      name="complicacionMedica"
+                      dataList={Utils.medicalConditionOptions()}
+                      value={formData.complicacionMedica ?? 2}
+                      onChange={(e) => {
+                        onSelectChange(e);
+                        setShowMedicalConditions(
+                          Number(e.target.value) === 1
+                        );
+                      }}
+                      request
+                    />
+                  </div>
+                  {
+                    (showMedicalConditions || formData.complicacionMedica === 1) &&
+                    <div className="container-input-member-modal">
+                      <CustomTextarea
+                        key="descripcionComplicacionMedica"
+                        label="Detalle de condición"
+                        name="descripcionComplicacionMedica"
+                        placeholder="Problemas respiratorios, Cardíacos, Asma, Rodillas, Columna, etc..."
+                        value={formData.descripcionComplicacionMedica ?? ""}
+                        onChange={onTextAreaChange}
+                        request
+                      />
+                    </div>
+                  }
+
                 </div>
               </div>
               <div className="form-other-info">

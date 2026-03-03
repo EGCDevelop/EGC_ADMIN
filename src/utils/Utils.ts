@@ -72,6 +72,19 @@ class Utils {
     ];
   }
 
+  public static getInstructorRolName = (rol: number): string => {
+    switch (rol) {
+      case 1:
+        return "Administrador";
+      case 2:
+        return "Instructor";
+      case 3:
+        return "Apoyo";
+      default:
+        return "";
+    }
+  }
+
   public static instructorAreaCombobox = (): ComboboxData[] => {
     return [
       {
@@ -185,6 +198,19 @@ class Utils {
     });
 
     await qrExport.download({ name: "qr-member", extension: format });
+  }
+
+    public static medicalConditionOptions = (): ComboboxData[] => {
+    return [
+      {
+        id: 1,
+        value: "Con complicación"
+      },
+      {
+        id: 2,
+        value: "Sin complicaciones"
+      },
+    ];
   }
 }
 
