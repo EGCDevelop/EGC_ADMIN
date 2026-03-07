@@ -6,7 +6,7 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { FaBriefcaseMedical, FaLock, FaPenToSquare } from "react-icons/fa6";
+import { FaBriefcaseMedical, FaFileExcel, FaLock, FaPenToSquare } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { MemberModal } from "./components/MemberModal";
 import { CancelMemberModal } from "./components/CancelMemberModal";
@@ -21,6 +21,7 @@ import { useMemberStore } from "../../hooks/useMemberStore";
 import { useDebounce } from "../../hooks/useDebounce";
 import MemberDTO from "../../interfaces/MemberDTO";
 import "./styles/member-page.css";
+import { exportMembersToExcel } from "../../utils/exportMembersToExcel";
 
 interface DataFilter {
   name: string;
@@ -100,8 +101,16 @@ export const MemberPage = () => {
     currentPage * pageSize
   );
 
-
   const debouncedName = useDebounce(formData.name, 500);
+
+  const handleDownload = () => {
+    if (paginatedData.length === 0) {
+      window.alert("No hay datos para mostrar");
+      return;
+    }
+
+    exportMembersToExcel(memberDataList);
+  }
 
   useEffect(() => {
     if (openModal) {
@@ -229,6 +238,14 @@ export const MemberPage = () => {
               <p>Total de usuarios</p>
               <span>{memberDataList.length}</span>
             </div>
+            <button
+              type="button"
+              className="member-page-export-button"
+              onClick={handleDownload}
+            >
+              <FaFileExcel />
+              Excel
+            </button>
             <button
               type="button"
               className="member-page-add-button"

@@ -17,12 +17,12 @@
   gap: 5px;
 }
 
-.member-page-header-content > strong {
+.member-page-header-content>strong {
   font-size: clamp(1.9rem, 2.3vw, 2.3rem);
   font-style: italic;
 }
 
-.member-page-header-content > p {
+.member-page-header-content>p {
   font-size: clamp(1.1rem, 1.3vw, 1.3rem);
   color: #4a5565;
 }
@@ -41,29 +41,43 @@
   gap: 5px;
 }
 
-.member-page-general-acount > p {
+.member-page-general-acount>p {
   text-align: center;
   color: #7a7a7a;
   font-size: clamp(1rem, 1.2vw, 1rem);
 }
 
-.member-page-general-acount > span {
+.member-page-general-acount>span {
   font-weight: bold;
   font-size: 1.8rem;
+}
+
+.member-page-export-button,
+.member-page-add-button {
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+
+.member-page-export-button {
+  background-color: #0e6f3b;
+  color: #fff;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
 }
 
 .member-page-add-button {
   background-color: #000000;
   color: #fff;
-  padding: 1rem;
   position: fixed;
   bottom: 1rem;
   right: 1rem;
-  border-radius: 5px;
-  display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
   z-index: 10;
 }
 
@@ -80,12 +94,13 @@
 .content-search-member-page {
   width: 100%;
   max-width: 550px;
-  
+
 }
 
 .member-page-combobox-filter {
   display: grid;
-  grid-template-columns: 1fr; /* 📱 por defecto en móvil → columna */
+  grid-template-columns: 1fr;
+  /* 📱 por defecto en móvil → columna */
   gap: 1rem;
 }
 
@@ -111,19 +126,21 @@
   z-index: 2;
 }
 
-.member-page-table-header > strong {
+.member-page-table-header>strong {
   font-size: clamp(1.3rem, 1.7vw, 1.6rem);
 }
 
-.member-page-table-header > p {
+.member-page-table-header>p {
   font-size: clamp(1rem, 1.2vw, 1.1rem);
   color: #4a5565;
 }
 
 /* Wrapper con scroll */
 .member-page-table-wrapper {
-  overflow-x: auto; /* scroll horizontal en móvil */
-  overflow-y: auto; /* scroll vertical */
+  overflow-x: auto;
+  /* scroll horizontal en móvil */
+  overflow-y: auto;
+  /* scroll vertical */
 }
 
 /* Fila base */
@@ -152,7 +169,7 @@
   white-space: nowrap;
 }
 
-.cell > .medical-icon {
+.cell>.medical-icon {
   color: #c62828;
 }
 
@@ -259,7 +276,7 @@
   align-items: center;
 }
 
-.member-page-nav-table > span {
+.member-page-nav-table>span {
   font-weight: 600;
 }
 
@@ -268,7 +285,7 @@
   gap: 1rem;
 }
 
-.member-page-nav-container-button > button {
+.member-page-nav-container-button>button {
   background-color: #fff;
   padding: 0.6rem 1.2rem;
   border-radius: 10px;
@@ -281,7 +298,7 @@
   cursor: pointer;
 }
 
-.member-page-nav-container-button > button:hover {
+.member-page-nav-container-button>button:hover {
   box-shadow: 0 0 15px 5px #dcdcdc;
 }
 
@@ -291,7 +308,7 @@
     justify-content: space-between;
   }
 
-  .member-page-general-acount > span {
+  .member-page-general-acount>span {
     font-size: 1.4rem;
   }
 
@@ -312,15 +329,23 @@
     gap: 1rem;
   }
 
+  .member-page-export-button,
   .member-page-add-button {
-    position: initial;
     height: 55%;
     padding: 0 1rem;
     margin-top: auto;
   }
 
+  .member-page-add-button {
+    position: initial;
+  }
+
   .member-page-add-button:hover {
     box-shadow: 0 0 5px 2px #4a5565;
+  }
+
+  .member-page-export-button:hover {
+    box-shadow: 0 0 5px 2px #39805a;
   }
 
   .member-page-combobox-filter {
