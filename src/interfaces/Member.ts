@@ -20,6 +20,9 @@ interface Member {
   telefonoEncargado: string;
   complicacionMedica: number;
   descripcionComplicacionMedica: string | null;
+  perteneceALinea: number;
+  tipoLinea?: number | null;
+  encargadoLinea?: number | null;
 }
 
 export default Member;

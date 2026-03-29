@@ -25,6 +25,9 @@ interface MemberDTO {
     intUsuario?: string;
     complicacionMedica: number;
     descripcionComplicacionMedica: string | null;
+    perteneceALinea: number;
+    tipoLinea?: number;
+    encargadoLinea?: number;
 }
 
 export default MemberDTO;

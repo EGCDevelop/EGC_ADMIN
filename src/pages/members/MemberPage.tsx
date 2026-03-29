@@ -2,6 +2,7 @@ import {
   FaArrowLeft,
   FaArrowRight,
   FaDownload,
+  FaFileArchive,
   FaPlus,
   FaSearch,
   FaTrash,
@@ -22,6 +23,10 @@ import { useDebounce } from "../../hooks/useDebounce";
 import MemberDTO from "../../interfaces/MemberDTO";
 import "./styles/member-page.css";
 import { exportMembersToExcel } from "../../utils/exportMembersToExcel";
+import JSZip from "jszip";
+import logo from '../../assets/egc.jpeg';
+import saveAs from 'file-saver';
+import generateQRBlob from "../../utils/generateQRBlob";
 
 interface DataFilter {
   name: string;
@@ -58,7 +63,8 @@ const resetMemberData: MemberDTO = {
   puNombre: "",
   intUsuario: "",
   complicacionMedica: 2,
-  descripcionComplicacionMedica: ""
+  descripcionComplicacionMedica: "",
+  perteneceALinea: 2,
 }
 
 export const MemberPage = () => {
@@ -87,9 +93,10 @@ export const MemberPage = () => {
     position: 0,
     isNew: 2
   });
+  const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
-  const totalPage = Math.ceil(memberDataList.length / pageSize);
+  const totalPage = Math.max(Math.ceil(memberDataList.length / pageSize), 1);
   const [alert, setAlert] = useState<{
     title: string;
     message: string;
@@ -111,6 +118,66 @@ export const MemberPage = () => {
 
     exportMembersToExcel(memberDataList);
   }
+
+  const getBase64Image = async (url: string): Promise<string> => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const formatFileName = (nombre: string, apellido: string) => {
+    const nombreCompleto = `${nombre} ${apellido}`.trim();
+    // Eliminamos caracteres que no sean letras, números, espacios o guiones
+    return nombreCompleto.replace(/[^a-z0-9áéíóúñü\s-]/gi, "");
+  };
+
+  const downloadAllQRs = async () => {
+    if (memberDataList.length === 0) return;
+
+    setIsGenerating(true);
+    const zip = new JSZip();
+
+    try {
+      // 1. Convertimos el logo a Base64 UNA SOLA VEZ
+      const logoBase64 = await getBase64Image(logo);
+
+      // 2. Mapeamos los datos usando la función de utilidad
+      const qrPromises = memberDataList.map(async (member) => {
+        const idStr = member.intIdIntegrante?.toString() || "0";
+
+        const nombreArchivo = formatFileName(
+          member.intNombres || "SinNombre",
+          member.intApellidos || ""
+        );
+
+        // Llamamos a nuestra función reutilizable
+        const blob = await generateQRBlob(idStr, logoBase64);
+
+        if (blob) {
+          zip.file(`${nombreArchivo}.png`, blob);
+        }
+      });
+
+      // 3. Esperamos a que terminen todas las promesas
+      await Promise.all(qrPromises);
+
+      // 4. Generamos y guardamos el ZIP
+      const zipContent = await zip.generateAsync({ type: "blob" });
+      saveAs(zipContent, `qrs_integrantes_${new Date().toLocaleDateString()}.zip`);
+    } catch (error) {
+      setAlert({
+        message: `Error al procesar el ZIP:", ${error}`,
+        status: "error",
+        title: "Error"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   useEffect(() => {
     if (openModal) {
@@ -210,11 +277,15 @@ export const MemberPage = () => {
       formData.position
     );
   }, [debouncedName, formData.establishment, formData.career,
-    formData.squad, formData.position, formData.isNew, lastCreate, lastUpdate, changeMemberState])
+    formData.squad, formData.position, formData.isNew, lastCreate, lastUpdate, changeMemberState]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [memberDataList.length]);
 
   return (
     <>
-      {(isLoadingGeneralSlice || isLoadingMemberSlice) && <CustomLoader />}
+      {(isLoadingGeneralSlice || isLoadingMemberSlice || isGenerating) && <CustomLoader />}
       {
         alert && <CustomAlert
           title={alert.title}
@@ -245,6 +316,14 @@ export const MemberPage = () => {
             >
               <FaFileExcel />
               Excel
+            </button>
+            <button
+              onClick={downloadAllQRs}
+              disabled={isGenerating || paginatedData.length === 0}
+              className="btn-descarga-masiva"
+            >
+              <FaFileArchive style={{ marginRight: '8px' }} />
+              QRs
             </button>
             <button
               type="button"

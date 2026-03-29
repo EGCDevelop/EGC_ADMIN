@@ -58,7 +58,10 @@ export const MemberModal = ({ member, onClose }: Props) => {
     nombreEncargado: "",
     telefonoEncargado: "",
     complicacionMedica: 2,
-    descripcionComplicacionMedica: ""
+    descripcionComplicacionMedica: "",
+    perteneceALinea: 2,
+    encargadoLinea: null,
+    tipoLinea: null
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -159,6 +162,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
 
   useEffect(() => {
     if (member && member.intIdIntegrante !== 0) {
+      const autoSelectLine = [6, 7, 8, 9, 10].includes(member.intescIdEscuadra) ? 1 : [4, 5].includes(member.intescIdEscuadra) ? 3 : [3].includes(member.intescIdEscuadra) ? 2 : 0;
+
       setFormData({
         idIntegrante: member.intIdIntegrante,
         nombres: member.intNombres || "",
@@ -180,7 +185,10 @@ export const MemberModal = ({ member, onClose }: Props) => {
         nombreEncargado: member.intNombreEncargado || "",
         telefonoEncargado: member.intTelefonoEncargado || "",
         complicacionMedica: member.complicacionMedica ?? 2,
-        descripcionComplicacionMedica: member.descripcionComplicacionMedica || ""
+        descripcionComplicacionMedica: member.descripcionComplicacionMedica || "",
+        perteneceALinea: member.perteneceALinea,
+        tipoLinea: member.tipoLinea === 0 ? autoSelectLine : member.tipoLinea,
+        encargadoLinea: member.encargadoLinea === 0 ? 2 : member.encargadoLinea
       });
     }
   }, [member]);
@@ -478,6 +486,44 @@ export const MemberModal = ({ member, onClose }: Props) => {
                           value={formData.estadoIntegrante}
                         />
                       </div>
+                      {
+                        ![1, 2, 12, 13, 14, 15].includes(member.intescIdEscuadra) && member.intIdIntegrante !== 0 &&
+                        <div className="container-input-member-modal">
+                          <CustomSelect
+                            dataList={Utils.belongsLine()}
+                            name="perteneceALinea"
+                            label="Pertenece a línea?"
+                            request
+                            onChange={onSelectChange}
+                            value={formData.perteneceALinea}
+                          />
+                        </div>
+                      }
+                      {
+                        member.intIdIntegrante !== 0 && formData.perteneceALinea === 1 && <div className="container-input-member-modal">
+                          <CustomSelect
+                            dataList={Utils.typeLines()}
+                            name="tipoLinea"
+                            label="Línea"
+                            request
+                            disabled={formData.idEscuadra !== 11}
+                            onChange={onSelectChange}
+                            value={formData.tipoLinea ?? 0}
+                          />
+                        </div>
+                      }
+                      {
+                        member.intIdIntegrante !== 0 && formData.perteneceALinea === 1 && <div className="container-input-member-modal">
+                          <CustomSelect
+                            dataList={Utils.lineManager()}
+                            name="encargadoLinea"
+                            label="Encargado de Línea"
+                            request
+                            onChange={onSelectChange}
+                            value={formData.encargadoLinea ?? 2}
+                          />
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>

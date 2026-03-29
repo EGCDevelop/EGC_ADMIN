@@ -200,7 +200,7 @@ class Utils {
     await qrExport.download({ name: "qr-member", extension: format });
   }
 
-    public static medicalConditionOptions = (): ComboboxData[] => {
+  public static medicalConditionOptions = (): ComboboxData[] => {
     return [
       {
         id: 1,
@@ -212,6 +212,56 @@ class Utils {
       },
     ];
   }
+
+  public static belongsLine = (): ComboboxData[] => {
+    const stateData: ComboboxData[] = [
+      {
+        id: 1,
+        value: "Si",
+      },
+      {
+        id: 2,
+        value: "No",
+      },
+    ];
+
+    return stateData;
+  }
+
+  public static lineManager = (): ComboboxData[] => {
+    const stateData: ComboboxData[] = [
+      {
+        id: 1,
+        value: "Si",
+      },
+      {
+        id: 2,
+        value: "No",
+      },
+    ];
+
+    return stateData;
+  }
+
+  public static typeLines = (): ComboboxData[] => {
+    const stateData: ComboboxData[] = [
+      {
+        id: 1,
+        value: "Percusión",
+      },
+      {
+        id: 2,
+        value: "Vientos",
+      },
+      {
+        id: 3,
+        value: "Liras & Xilófonos ",
+      }
+    ];
+
+    return stateData;
+  }
+
 }
 
 export default Utils;

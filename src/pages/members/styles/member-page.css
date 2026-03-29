@@ -53,14 +53,14 @@
 }
 
 .member-page-export-button,
-.member-page-add-button {
+.member-page-add-button,
+.btn-descarga-masiva {
   padding: 1rem;
   cursor: pointer;
   border-radius: 5px;
   display: flex;
   align-items: center;
 }
-
 
 .member-page-export-button {
   background-color: #0e6f3b;
@@ -79,6 +79,11 @@
   align-items: center;
   gap: 10px;
   z-index: 10;
+}
+
+.btn-descarga-masiva {
+  background-color: #141581;
+  color: #fff;
 }
 
 .member-page-filter-container {
@@ -330,7 +335,8 @@
   }
 
   .member-page-export-button,
-  .member-page-add-button {
+  .member-page-add-button,
+  .btn-descarga-masiva {
     height: 55%;
     padding: 0 1rem;
     margin-top: auto;
@@ -342,6 +348,10 @@
 
   .member-page-add-button:hover {
     box-shadow: 0 0 5px 2px #4a5565;
+  }
+
+  .btn-descarga-masiva:hover {
+    box-shadow: 0 0 6px 1px #141581;
   }
 
   .member-page-export-button:hover {

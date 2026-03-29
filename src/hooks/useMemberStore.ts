@@ -100,7 +100,10 @@ export const useMemberStore = () => {
                 fatherCell: Utils.normalize(data.telefonoEncargado),
                 username: createUsername,
                 complicacionMedica: data.complicacionMedica,
-                descripcionComplicacionMedica: data.descripcionComplicacionMedica
+                descripcionComplicacionMedica: data.descripcionComplicacionMedica,
+                perteneceALinea: data.perteneceALinea,
+                tipoLinea: data.tipoLinea,
+                encargadoLinea: data.encargadoLinea
             };
 
             const response = await fetch(`${apiUrl}/Member/insert_member`, {
@@ -162,7 +165,10 @@ export const useMemberStore = () => {
                 username: createUsername?.toLocaleLowerCase(),
                 password: createPassword,
                 complicacionMedica: data.complicacionMedica,
-                descripcionComplicacionMedica: data.descripcionComplicacionMedica
+                descripcionComplicacionMedica: data.descripcionComplicacionMedica,
+                perteneceALinea: data.perteneceALinea,
+                tipoLinea: data.tipoLinea ?? 0,
+                encargadoLinea: data.encargadoLinea ?? 0
             };
 
             const response = await fetch(`${apiUrl}/Member/update_member`, {
