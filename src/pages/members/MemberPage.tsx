@@ -65,6 +65,7 @@ const resetMemberData: MemberDTO = {
   complicacionMedica: 2,
   descripcionComplicacionMedica: "",
   perteneceALinea: 2,
+  categoria: 2
 }
 
 export const MemberPage = () => {

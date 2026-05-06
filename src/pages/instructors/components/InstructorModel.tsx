@@ -251,7 +251,7 @@ export const InstructorModel = ({ dataUpdate, onClose }: Props) => {
                     <form method='POST' className='form-instructor-page' onSubmit={handleInsertOrUpdate}>
                         <div className="other-info-member-modal">
                             <div className="form-academic-information-member-modal">
-                                <span>Información Académica</span>
+                                <span>Información Personal</span>
                                 <div className="inputs-grid">
                                     <div className="container-input-member-modal">
                                         <CustomInput

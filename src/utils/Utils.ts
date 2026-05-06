@@ -40,6 +40,25 @@ class Utils {
     return stateData;
   }
 
+  public static categoryDataList = (): ComboboxData[] => {
+    const stateData: ComboboxData[] = [
+      {
+        id: 1,
+        value: "Categoría A",
+      },
+      {
+        id: 2,
+        value: "Categoría B",
+      },
+      {
+        id: 3,
+        value: "Fabrica",
+      },
+    ];
+
+    return stateData;
+  }
+
   public static instructorStateDataList = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
       {

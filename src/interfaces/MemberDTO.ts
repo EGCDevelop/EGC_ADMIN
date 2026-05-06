@@ -28,6 +28,7 @@ interface MemberDTO {
     perteneceALinea: number;
     tipoLinea?: number;
     encargadoLinea?: number;
+    categoria: number;
 }
 
 export default MemberDTO;

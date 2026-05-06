@@ -61,7 +61,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
     descripcionComplicacionMedica: "",
     perteneceALinea: 2,
     encargadoLinea: null,
-    tipoLinea: null
+    tipoLinea: null,
+    categoria: 2
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -188,7 +189,8 @@ export const MemberModal = ({ member, onClose }: Props) => {
         descripcionComplicacionMedica: member.descripcionComplicacionMedica || "",
         perteneceALinea: member.perteneceALinea,
         tipoLinea: member.tipoLinea === 0 ? autoSelectLine : member.tipoLinea,
-        encargadoLinea: member.encargadoLinea === 0 ? 2 : member.encargadoLinea
+        encargadoLinea: member.encargadoLinea === 0 ? 2 : member.encargadoLinea,
+        categoria: member.categoria
       });
     }
   }, [member]);
@@ -524,6 +526,17 @@ export const MemberModal = ({ member, onClose }: Props) => {
                           />
                         </div>
                       }
+                      <div className="container-input-member-modal">
+                        <CustomSelect
+                          dataList={Utils.categoryDataList()}
+                          name="categoria"
+                          label="Categoría"
+                          request
+                          onChange={onSelectChange}
+                          value={formData.categoria}
+                          disabled={formData.idIntegrante === 0}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

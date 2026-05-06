@@ -23,6 +23,7 @@ interface Member {
   perteneceALinea: number;
   tipoLinea?: number | null;
   encargadoLinea?: number | null;
+  categoria: number;
 }
 
 export default Member;

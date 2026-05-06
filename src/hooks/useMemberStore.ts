@@ -103,7 +103,8 @@ export const useMemberStore = () => {
                 descripcionComplicacionMedica: data.descripcionComplicacionMedica,
                 perteneceALinea: data.perteneceALinea,
                 tipoLinea: data.tipoLinea,
-                encargadoLinea: data.encargadoLinea
+                encargadoLinea: data.encargadoLinea,
+                categoryId: data.categoria
             };
 
             const response = await fetch(`${apiUrl}/Member/insert_member`, {
@@ -168,7 +169,8 @@ export const useMemberStore = () => {
                 descripcionComplicacionMedica: data.descripcionComplicacionMedica,
                 perteneceALinea: data.perteneceALinea,
                 tipoLinea: data.tipoLinea ?? 0,
-                encargadoLinea: data.encargadoLinea ?? 0
+                encargadoLinea: data.encargadoLinea ?? 0,
+                categoryId: data.categoria
             };
 
             const response = await fetch(`${apiUrl}/Member/update_member`, {
