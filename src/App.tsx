@@ -7,12 +7,12 @@ function App() {
   return (
     <>
       <Provider store={store}>
-        <BrowserRouter basename="/app">
-          <AppRouter />
-        </BrowserRouter>
-        {/* <BrowserRouter>
+        {/* <BrowserRouter basename="/app">
           <AppRouter />
         </BrowserRouter> */}
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
       </Provider>
     </>
   );

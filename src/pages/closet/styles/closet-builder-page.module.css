@@ -1,0 +1,368 @@
+/* Equivalencias directas de las clases Tailwind del diseño original */
+
+.page {
+  max-width: 80rem; /* max-w-7xl */
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+/* ---------- Encabezado ---------- */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* gap-4 */
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.titleIconBox {
+  border-radius: 0.5rem;
+  background-color: #f3f4f6; /* gray-100 */
+  padding: 0.5rem;
+}
+
+.titleIcon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #374151; /* gray-700 */
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0; /* mt-2 */
+  color: #6b7280;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.statusSaved {
+  color: #6b7280;
+}
+
+.statusDirty {
+  color: #b45309; /* amber-700 */
+}
+
+/* ---------- Paneles ---------- */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .panels {
+    grid-template-columns: 1fr 1fr; /* lg:grid-cols-[1fr_1fr] */
+  }
+}
+
+.panel {
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 1.25rem;
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition-property:
+    color, background-color, border-color, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Mientras se arrastra un implemento */
+.panelDragging {
+  border-color: #374151; /* gray-700 */
+  background-color: #f9fafb; /* gray-50 */
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.panelHeaderTop {
+  align-items: flex-start;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.panelText {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #6b7280;
+}
+
+.badge {
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.totalBox {
+  text-align: right;
+}
+
+.totalLabel {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em; /* tracking-wide */
+  color: #9ca3af; /* gray-400 */
+}
+
+.totalValue {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.warning {
+  margin: 0.75rem 0 0; /* mt-3 */
+  border-radius: 0.5rem;
+  background-color: #fffbeb; /* amber-50 */
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #92400e; /* amber-800 */
+}
+
+/* ---------- Buscador (réplica del Input de shadcn/ui) ---------- */
+.input {
+  margin-top: 1rem;
+  display: block;
+  width: 100%;
+  height: 2.25rem; /* h-9 */
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  padding: 0.25rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #0a0a0a;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  outline: none;
+  transition:
+    color 150ms,
+    box-shadow 150ms;
+}
+
+.input::placeholder {
+  color: #737373;
+}
+
+.input:focus-visible {
+  border-color: #a1a1a1;
+  box-shadow: 0 0 0 3px rgb(161 161 161 / 0.5);
+}
+
+/* ---------- Listas e items ---------- */
+.list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem; /* p-3 */
+}
+
+.itemHover {
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.itemHover:hover {
+  border-color: #9ca3af;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .itemHover {
+    transition: none;
+  }
+}
+
+.itemInfo {
+  min-width: 0;
+}
+
+.itemName {
+  margin: 0;
+  font-weight: 500;
+  color: #111827;
+}
+
+.itemMeta {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #6b7280;
+}
+
+.empty {
+  margin: 0;
+  border-radius: 0.5rem;
+  border: 1px dashed #d1d5db; /* gray-300 */
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #6b7280;
+}
+
+.emptySm {
+  padding: 2rem; /* p-8 */
+}
+
+.emptyLg {
+  padding: 2.5rem; /* p-10 */
+}
+
+/* ---------- Pie ---------- */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ---------- Botones (réplica de shadcn/ui) ---------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.25rem; /* h-9 */
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:focus-visible {
+  outline: 3px solid rgb(161 161 161 / 0.5);
+  outline-offset: 0;
+}
+
+.button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.buttonSm {
+  height: 2rem; /* h-8 */
+  gap: 0.375rem;
+  padding: 0 0.75rem;
+}
+
+.buttonOutline {
+  border-color: #e5e5e5;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.buttonOutline:hover {
+  background-color: #f5f5f5;
+}
+
+.buttonGhost {
+  background-color: transparent;
+  color: #0a0a0a;
+}
+
+.buttonGhost:hover {
+  background-color: #f5f5f5;
+}
+
+.buttonPrimary {
+  background-color: #171717;
+  color: #fafafa;
+}
+
+.buttonPrimary:hover {
+  background-color: rgb(23 23 23 / 0.9);
+}
+
+.iconLeft {
+  width: 1rem; /* h-4 w-4 */
+  height: 1rem;
+  margin-right: 0.5rem; /* mr-2 */
+}
+
+.iconPlus {
+  width: 0.875rem; /* h-3.5 w-3.5 */
+  height: 0.875rem;
+  margin-right: 0.25rem; /* mr-1 */
+}

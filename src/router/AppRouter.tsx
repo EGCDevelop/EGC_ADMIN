@@ -9,15 +9,17 @@ import MemberPage from "../pages/members/MemberPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import InstructorsPage from "../pages/instructors/InstructorsPage";
 import { ConnectionsPage } from "../pages/conections/ConnectionsPage";
+import { ClosetOptionsPage } from "../pages/closet/ClosetOptionsPage";
+import { ClosetBuilderPage } from "../pages/closet/ClosetBuilderPage";
 
 export const AppRouter = () => {
   const { status, user, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
-  }, [])
+  }, []);
 
-  if (status === 'checking') return <CustomLoader />
+  if (status === "checking") return <CustomLoader />;
 
   return (
     <Routes>
@@ -38,6 +40,11 @@ export const AppRouter = () => {
                 <Route path="instructors" element={<InstructorsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="connections" element={<ConnectionsPage />} />
+                <Route path="closetOptions" element={<ClosetOptionsPage />} />
+                <Route
+                  path="closetBuilder/:closetId"
+                  element={<ClosetBuilderPage />}
+                />
                 <Route path="/*" element={<Navigate to="/dashboard" />} />
               </>
             )}

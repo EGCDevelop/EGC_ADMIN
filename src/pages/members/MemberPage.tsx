@@ -7,7 +7,13 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { FaBriefcaseMedical, FaFileExcel, FaLock, FaPenToSquare } from "react-icons/fa6";
+import {
+  FaBriefcaseMedical,
+  FaCube,
+  FaFileExcel,
+  FaLock,
+  FaPenToSquare,
+} from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { MemberModal } from "./components/MemberModal";
 import { CancelMemberModal } from "./components/CancelMemberModal";
@@ -24,8 +30,8 @@ import MemberDTO from "../../interfaces/MemberDTO";
 import "./styles/member-page.css";
 import { exportMembersToExcel } from "../../utils/exportMembersToExcel";
 import JSZip from "jszip";
-import logo from '../../assets/egc.jpeg';
-import saveAs from 'file-saver';
+import logo from "../../assets/egc.jpeg";
+import saveAs from "file-saver";
 import generateQRBlob from "../../utils/generateQRBlob";
 
 interface DataFilter {
@@ -65,8 +71,8 @@ const resetMemberData: MemberDTO = {
   complicacionMedica: 2,
   descripcionComplicacionMedica: "",
   perteneceALinea: 2,
-  categoria: 2
-}
+  categoria: 2,
+};
 
 export const MemberPage = () => {
   const {
@@ -79,12 +85,23 @@ export const MemberPage = () => {
     changeMemberPassword,
     GetMemberForInstructor,
     MemberChangePassword,
-    ResetState } = useMemberStore();
-  const { isLoadingGeneralSlice, establishmentList, careerList, squadsList,
-    positionList, errorMessage, GetEstablishment, GetCareer, GetSquads,
-    GetPosition } = useGeneralStore();
+    ResetState,
+  } = useMemberStore();
+  const {
+    isLoadingGeneralSlice,
+    establishmentList,
+    careerList,
+    squadsList,
+    positionList,
+    errorMessage,
+    GetEstablishment,
+    GetCareer,
+    GetSquads,
+    GetPosition,
+  } = useGeneralStore();
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [memberDataUpdate, setMemberDataUpdate] = useState<MemberDTO>(resetMemberData);
+  const [memberDataUpdate, setMemberDataUpdate] =
+    useState<MemberDTO>(resetMemberData);
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
   const { formData, onChange, onSelectChange } = useForm<DataFilter>({
     name: "",
@@ -92,7 +109,7 @@ export const MemberPage = () => {
     career: 0,
     squad: 0,
     position: 0,
-    isNew: 2
+    isNew: 2,
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -106,7 +123,7 @@ export const MemberPage = () => {
 
   const paginatedData = memberDataList.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   const debouncedName = useDebounce(formData.name, 500);
@@ -118,7 +135,7 @@ export const MemberPage = () => {
     }
 
     exportMembersToExcel(memberDataList);
-  }
+  };
 
   const getBase64Image = async (url: string): Promise<string> => {
     const response = await fetch(url);
@@ -152,7 +169,7 @@ export const MemberPage = () => {
 
         const nombreArchivo = formatFileName(
           member.intNombres || "SinNombre",
-          member.intApellidos || ""
+          member.intApellidos || "",
         );
 
         // Llamamos a nuestra función reutilizable
@@ -168,12 +185,15 @@ export const MemberPage = () => {
 
       // 4. Generamos y guardamos el ZIP
       const zipContent = await zip.generateAsync({ type: "blob" });
-      saveAs(zipContent, `qrs_integrantes_${new Date().toLocaleDateString()}.zip`);
+      saveAs(
+        zipContent,
+        `qrs_integrantes_${new Date().toLocaleDateString()}.zip`,
+      );
     } catch (error) {
       setAlert({
         message: `Error al procesar el ZIP:", ${error}`,
         status: "error",
-        title: "Error"
+        title: "Error",
       });
     } finally {
       setIsGenerating(false);
@@ -213,55 +233,57 @@ export const MemberPage = () => {
 
   useEffect(() => {
     if (errorMessage || errorMemberSliceMessage) {
-      const validateMessage = errorMessage ? errorMessage : errorMemberSliceMessage;
+      const validateMessage = errorMessage
+        ? errorMessage
+        : errorMemberSliceMessage;
       setAlert({
         title: "Error",
         message: validateMessage!,
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }, [errorMessage])
+  }, [errorMessage]);
 
   useEffect(() => {
     if (lastCreate) {
       setAlert({
         title: "Exito",
         message: "Integrante creado exitosamente",
-        status: "success"
+        status: "success",
       });
       setOpenModal(false);
     }
-  }, [lastCreate])
+  }, [lastCreate]);
 
   useEffect(() => {
     if (lastUpdate) {
       setAlert({
         title: "Exito",
         message: "Integrante modificado exitosamente",
-        status: "success"
+        status: "success",
       });
       setOpenModal(false);
     }
-  }, [lastUpdate])
+  }, [lastUpdate]);
 
   useEffect(() => {
     if (changeMemberState) {
       setAlert({
         title: "Exito",
         message: "Integrante dado de baja",
-        status: "success"
+        status: "success",
       });
       setOpenCancelModal(false);
     }
     ResetState();
-  }, [changeMemberState])
+  }, [changeMemberState]);
 
   useEffect(() => {
     if (changeMemberPassword) {
       setAlert({
         title: "Exito",
         message: "Contraseña modificada exitosamente",
-        status: "success"
+        status: "success",
       });
       ResetState();
     }
@@ -275,10 +297,19 @@ export const MemberPage = () => {
       formData.isNew,
       1,
       formData.career,
-      formData.position
+      formData.position,
     );
-  }, [debouncedName, formData.establishment, formData.career,
-    formData.squad, formData.position, formData.isNew, lastCreate, lastUpdate, changeMemberState]);
+  }, [
+    debouncedName,
+    formData.establishment,
+    formData.career,
+    formData.squad,
+    formData.position,
+    formData.isNew,
+    lastCreate,
+    lastUpdate,
+    changeMemberState,
+  ]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -286,18 +317,28 @@ export const MemberPage = () => {
 
   return (
     <>
-      {(isLoadingGeneralSlice || isLoadingMemberSlice || isGenerating) && <CustomLoader />}
-      {
-        alert && <CustomAlert
+      {(isLoadingGeneralSlice || isLoadingMemberSlice || isGenerating) && (
+        <CustomLoader />
+      )}
+      {alert && (
+        <CustomAlert
           title={alert.title}
           message={alert.message}
           status={alert.status}
           onClose={() => setAlert(null)}
         />
-      }
-      {openModal && <MemberModal member={memberDataUpdate} onClose={() => setOpenModal(false)} />}
+      )}
+      {openModal && (
+        <MemberModal
+          member={memberDataUpdate}
+          onClose={() => setOpenModal(false)}
+        />
+      )}
       {openCancelModal && (
-        <CancelMemberModal member={memberDataUpdate} onClose={() => setOpenCancelModal(false)} />
+        <CancelMemberModal
+          member={memberDataUpdate}
+          onClose={() => setOpenCancelModal(false)}
+        />
       )}
       <div className="member-page-main-container">
         <div className="member-page-header">
@@ -323,7 +364,7 @@ export const MemberPage = () => {
               disabled={isGenerating || paginatedData.length === 0}
               className="btn-descarga-masiva"
             >
-              <FaFileArchive style={{ marginRight: '8px' }} />
+              <FaFileArchive style={{ marginRight: "8px" }} />
               QRs
             </button>
             <button
@@ -423,7 +464,12 @@ export const MemberPage = () => {
             {/* Filas */}
             {paginatedData.map((data) => (
               <div className="member-page-table-row" key={data.intIdIntegrante}>
-                <div className="cell">{data.intNombres.concat(" ").concat(data.intApellidos)}{data.complicacionMedica === 1 && <FaBriefcaseMedical className="medical-icon" />}</div>
+                <div className="cell">
+                  {data.intNombres.concat(" ").concat(data.intApellidos)}
+                  {data.complicacionMedica === 1 && (
+                    <FaBriefcaseMedical className="medical-icon" />
+                  )}
+                </div>
                 <div className="cell">{data.estNombreEstablecimiento}</div>
                 <div className="cell">
                   <p className="cell-squad">{data.escNombre}</p>
@@ -431,8 +477,11 @@ export const MemberPage = () => {
                 <div className="cell">{data.carNombreCarrera}</div>
                 <div className="cell">
                   <p
-                    className={`${data.intEsNuevo ? "cell-state-inactive" : "cell-state-active"
-                      }`}
+                    className={`${
+                      data.intEsNuevo
+                        ? "cell-state-inactive"
+                        : "cell-state-active"
+                    }`}
                   >
                     {data.intEsNuevo ? "Nuevo" : "Antiguo"}
                   </p>
@@ -442,23 +491,37 @@ export const MemberPage = () => {
                   <div className="action-menu">
                     <button className="action-btn">⋮</button>
                     <div className="dropdown">
-                      <button type="button" onClick={() => {
-                        setMemberDataUpdate(data);
-                        setOpenModal(true);
-                      }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMemberDataUpdate(data);
+                          setOpenModal(true);
+                        }}
+                      >
                         <FaPenToSquare /> Editar
                       </button>
-                      <button type="button" onClick={() => Utils.downloadQR(data.intIdIntegrante.toString(), "png")}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          Utils.downloadQR(
+                            data.intIdIntegrante.toString(),
+                            "png",
+                          )
+                        }
+                      >
                         <FaDownload /> Descargar QR
                       </button>
                       <button
                         type="button"
                         onClick={() => {
                           setMemberDataUpdate(data);
-                          setOpenCancelModal(true)
+                          setOpenCancelModal(true);
                         }}
                       >
                         <FaTrash /> Dar baja
+                      </button>
+                      <button type="button">
+                        <FaCube /> Uniforme
                       </button>
                       <button
                         type="button"
@@ -466,7 +529,6 @@ export const MemberPage = () => {
                       >
                         <FaLock /> Change Pass
                       </button>
-
                     </div>
                   </div>
                 </div>
