@@ -24,6 +24,13 @@ export const useForm = <T>(initState: T) => {
     }));
   };
 
+  const onCustomChange = <K extends keyof T>(name: K, value: T[K]) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const resetForm = () => {
     setFormData({ ...initState });
   };
@@ -52,5 +59,6 @@ export const useForm = <T>(initState: T) => {
     onTextAreaChange,
     onSelectChange,
     resetForm,
+    onCustomChange,
   };
 };

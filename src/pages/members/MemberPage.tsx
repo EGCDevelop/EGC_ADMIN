@@ -33,6 +33,7 @@ import JSZip from "jszip";
 import logo from "../../assets/egc.jpeg";
 import saveAs from "file-saver";
 import generateQRBlob from "../../utils/generateQRBlob";
+import { useNavigate } from "react-router-dom";
 
 interface DataFilter {
   name: string;
@@ -75,6 +76,7 @@ const resetMemberData: MemberDTO = {
 };
 
 export const MemberPage = () => {
+  const navigate = useNavigate();
   const {
     isLoadingMemberSlice,
     memberDataList,
@@ -520,7 +522,12 @@ export const MemberPage = () => {
                       >
                         <FaTrash /> Dar baja
                       </button>
-                      <button type="button">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(`/uniformOrders/${data.intIdIntegrante}`)
+                        }
+                      >
                         <FaCube /> Uniforme
                       </button>
                       <button

@@ -1,0 +1,598 @@
+.page {
+  padding: 0.1rem;
+}
+
+/* ---------- Encabezado ---------- */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem; /* mb-8 */
+}
+
+.title {
+  margin: 0;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #6b7280;
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ---------- Tarjetas ---------- */
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6; /* gray-100 */
+  background-color: #ffffff;
+  padding: 1.5rem; /* p-6 */
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.cardSpaced {
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.formTitle {
+  margin-bottom: 1rem;
+}
+
+.cardIconHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem; /* mb-5 */
+}
+
+.headerIcon {
+  width: 1.25rem; /* h-5 w-5 */
+  height: 1.25rem;
+  color: #4b5563; /* gray-600 */
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.infoLabel {
+  margin: 0;
+  color: #6b7280;
+}
+
+.infoValue {
+  margin: 0;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* ---------- Pedido actual + Pagos ---------- */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.cardSub {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #6b7280;
+}
+
+/* Estado vacío: selección de implementos */
+.dashedBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+  border-radius: 0.5rem;
+  border: 1px dashed #d1d5db;
+  padding: 1.25rem;
+}
+
+.dashedText {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #4b5563;
+}
+
+.catalogGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.catalogRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.catalogRow:hover {
+  background-color: #f9fafb;
+}
+
+.catalogName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.catalogPrice {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+/* Tabla de implementos */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.table thead tr {
+  border-bottom: 1px solid #e5e5e5;
+  text-align: left;
+  color: #6b7280;
+}
+
+.table th {
+  padding: 0.75rem 0; /* py-3 */
+  text-align: left;
+  font-weight: 700;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.table tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.table td {
+  padding: 1rem 0; /* py-4 */
+  vertical-align: middle;
+}
+
+.tdName {
+  font-weight: 500;
+  color: #111827;
+}
+
+.textMuted {
+  color: #4b5563;
+}
+
+.textDelivered {
+  color: #374151;
+}
+
+.textPending {
+  color: #6b7280;
+}
+
+/* Panel de pagos */
+.sideHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.sideBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.sideRow {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sideRowTotal {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1rem;
+}
+
+.sideLabel {
+  margin: 0;
+  color: #6b7280;
+}
+
+.statusBox {
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  padding: 0.75rem;
+}
+
+.statusLabelSpaced {
+  margin-top: 0.5rem;
+}
+
+.statusValue {
+  margin: 0;
+  font-weight: 500;
+  color: #111827;
+}
+
+.miniForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1rem;
+}
+
+/* ---------- Formulario completo de pago ---------- */
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #4b5563;
+}
+
+.cashSection {
+  margin-top: 1.25rem; /* mt-5 */
+}
+
+.cashTitle {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.cashGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cashLabel {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #4b5563;
+}
+
+.cashTotal {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.summaryRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.notesBlock {
+  margin-top: 1rem;
+}
+
+.formError {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.textSuccess {
+  color: #15803d; /* green-700 */
+}
+
+.textDanger {
+  color: #dc2626; /* red-600 */
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+/* ---------- Historial de pagos ---------- */
+.historyRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.historyRow + .historyRow {
+  border-top: 1px solid #e5e5e5;
+}
+
+.historyRow > strong {
+  font-size: 1.2rem;
+}
+
+.historyMain {
+  margin: 0;
+  font-weight: 500;
+  color: #111827;
+}
+
+.historyMeta {
+  margin: 0;
+  color: #6b7280;
+}
+
+/* ---------- Vista previa del estado de cuenta ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(0 0 0 / 0.5);
+  padding: 1rem;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 64rem; /* max-w-5xl */
+  height: 90vh;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  box-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 0.75rem 1.25rem;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.iframe {
+  flex: 1 1 0%;
+  min-height: 0;
+  border: 0;
+  background-color: #f3f4f6;
+}
+
+/* ---------- Controles (réplica de shadcn/ui) ---------- */
+.input {
+  display: block;
+  width: 100%;
+  height: 2.25rem;
+  min-width: 0;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  padding: 0.25rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #0a0a0a;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  outline: none;
+  transition:
+    color 150ms,
+    box-shadow 150ms;
+}
+
+.input::placeholder {
+  color: #737373;
+}
+
+.input:focus-visible {
+  border-color: #a1a1a1;
+  box-shadow: 0 0 0 3px rgb(161 161 161 / 0.5);
+}
+
+.select {
+  width: 100%;
+  height: 2.5rem; /* h-10 */
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 0 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #0a0a0a;
+}
+
+.select:focus-visible {
+  outline: none;
+  border-color: #a1a1a1;
+  box-shadow: 0 0 0 3px rgb(161 161 161 / 0.5);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:focus-visible {
+  outline: 3px solid rgb(161 161 161 / 0.5);
+  outline-offset: 0;
+}
+
+.button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.buttonSm {
+  height: 2rem;
+  gap: 0.375rem;
+  padding: 0 0.75rem;
+}
+
+.buttonFull {
+  width: 100%;
+}
+
+.buttonOutline {
+  border-color: #e5e5e5;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.buttonOutline:hover {
+  background-color: #f5f5f5;
+}
+
+.buttonPrimary {
+  background-color: #171717;
+  color: #fafafa;
+}
+
+.buttonPrimary:hover {
+  background-color: rgb(23 23 23 / 0.9);
+}
+
+.iconLeft {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .cashGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .catalogGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .infoGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .formGrid2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cashGrid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .mainGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .orderCard {
+    grid-column: span 2 / span 2;
+  }
+
+  .sideRow {
+    flex-direction: row;
+  }
+
+  .historyRow {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .historyRow > strong {
+    font-size: 1.5rem;
+    align-items: center;
+    display: flex;
+  }
+}
+
+@media (min-width: 1280px) {
+  .infoGrid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
