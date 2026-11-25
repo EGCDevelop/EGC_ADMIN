@@ -68,6 +68,22 @@
   }
 }
 
+.create-closet-button {
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  background-color: #17204e;
+  color: #fff;
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
 .footer-card-implement {
   display: flex;
   justify-content: center;
@@ -96,6 +112,17 @@
 }
 
 @media screen and (min-width: 1024px) {
+  .create-closet-button {
+    position: initial;
+    height: 55%;
+    padding: 0 1rem;
+    margin-top: auto;
+
+    &:hover {
+      box-shadow: 0 0 5px 2px #3d4986;
+    }
+  }
+
   .container-grid-implements {
     grid-template-columns: repeat(4, 1fr);
   }

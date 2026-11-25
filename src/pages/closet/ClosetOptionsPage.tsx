@@ -20,7 +20,7 @@ const closets = [
     count: 3,
     total: "Q350.00",
   },
-  { id: 3, name: "Banda", icon: CgMusic, count: 0, total: "Q0.00" },
+  { id: 6, name: "Banda", icon: CgMusic, count: 0, total: "Q0.00" },
 ];
 
 export const ClosetOptionsPage = () => {
@@ -61,6 +61,7 @@ export const ClosetOptionsPage = () => {
 
       <button
         type="button"
+        onClick={() => navigate(-1)}
         className={`${styles.button} ${styles.buttonGhost}`}
       >
         <FaArrowLeft className={styles.buttonIcon} />

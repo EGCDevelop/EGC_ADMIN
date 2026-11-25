@@ -1,4 +1,4 @@
-import { FaPlus } from "react-icons/fa6";
+import { FaBagShopping, FaPlus } from "react-icons/fa6";
 import { CustomInput } from "../components/CustomInput";
 import { FaEdit, FaSearch } from "react-icons/fa";
 import { useForm } from "../../hooks/useForm";
@@ -15,6 +15,7 @@ import ImplementsForm from "../../interfaces/ImplementsForm";
 import CustomFilter from "../components/CustomFilter";
 import { CustomAlert } from "../components/CustomAlert";
 import ErrorData from "../../interfaces/ErrorData.types";
+import { useNavigate } from "react-router-dom";
 
 interface DataSearch {
   search: string;
@@ -22,6 +23,7 @@ interface DataSearch {
 }
 
 export const ImplementsPage = () => {
+  const navigate = useNavigate();
   const {
     isLoadingUniformSlice,
     uniformsList,
@@ -143,6 +145,12 @@ export const ImplementsPage = () => {
             <p>Gestiona los implementos disponibles para los uniformes.</p>
           </div>
           <div className="member-page-header-content">
+            <button
+              className="create-closet-button"
+              onClick={() => navigate(`/closetOptions`)}
+            >
+              <FaBagShopping /> Clóset
+            </button>
             <button
               type="button"
               className="member-page-add-button"
