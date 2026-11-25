@@ -1,0 +1,49 @@
+.container-form-implements-model {
+    display: grid;
+    gap: 1rem;
+}
+
+.action-buttons-form-implements-model {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1rem;
+}
+
+.action-buttons-form-implements-model>button {
+    padding: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:nth-child(1) {
+        background-color: #fff;
+        box-shadow: 0 0 1px 1px #dddddd;
+
+        &:hover {
+            box-shadow: 0 0 5px 2px #dddddd;
+        }
+    }
+
+    &:nth-child(2) {
+        background-color: black;
+        color: #fff;
+
+        &:hover {
+            box-shadow: 0 0 5px 2px #8d8d8d;
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .container-form-implements-model {
+        gap: 1.5rem;
+    }
+ 
+    .action-buttons-form-implements-model {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .action-buttons-form-implements-model>button {
+        padding: 0.7rem 1.5rem;
+    }
+}

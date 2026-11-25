@@ -13,6 +13,7 @@ import { ClosetOptionsPage } from "../pages/closet/ClosetOptionsPage";
 import { ClosetBuilderPage } from "../pages/closet/ClosetBuilderPage";
 import { UniformOrdersPage } from "../pages/closet/UniformOrdersPage";
 import { PaymentControlPage } from "../pages/closet/PaymentControlPage";
+import ImplementsPage from "../pages/implements/ImplementsPage";
 
 export const AppRouter = () => {
   const { status, user, checkAuth } = useAuthStore();
@@ -55,6 +56,7 @@ export const AppRouter = () => {
                   path="paymentControl/:orderId?"
                   element={<PaymentControlPage />}
                 />
+                <Route path="implements" element={<ImplementsPage />} />
                 <Route path="/*" element={<Navigate to="/dashboard" />} />
               </>
             )}
@@ -66,6 +68,7 @@ export const AppRouter = () => {
                 <Route path="usuarios" element={<MemberPage />} />
                 <Route path="instructors" element={<InstructorsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="implements" element={<ImplementsPage />} />
                 <Route path="/*" element={<Navigate to="/profile" />} />
               </>
             )}

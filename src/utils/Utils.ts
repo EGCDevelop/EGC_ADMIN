@@ -281,6 +281,13 @@ class Utils {
     return stateData;
   }
 
+  public static formatCurrency = (amount: number): string => {
+    return `Q${amount.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+  };
+
 }
 
 export default Utils;

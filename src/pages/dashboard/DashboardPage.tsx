@@ -46,6 +46,32 @@ export const DashboardPage = () => {
   const amountData = squadsList.map((s) => countBySquad[s.id] || 0);
 
 
+  const categoryData = useMemo(() => {
+    // 1. Definimos los nombres de las categorías según tus notas
+    const categoryNames: Record<number, string> = {
+      1: "Categoría A",
+      2: "Categoría B",
+      3: "Fábrica"
+    };
+
+    // 2. Inicializamos el contador
+    const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+
+    // 3. Contamos las ocurrencias
+    memberDataList.forEach((member) => {
+      if (counts[member.categoria] !== undefined) {
+        counts[member.categoria]++;
+      }
+    });
+
+    // 4. Retornamos el formato final para ChartPie [{ value, name }]
+    return Object.keys(counts).map((key) => ({
+      name: categoryNames[Number(key)],
+      value: counts[Number(key)]
+    }));
+  }, [memberDataList]);
+
+
   useEffect(() => {
     GetEstablishment();
     GetCareer();
@@ -189,57 +215,6 @@ export const DashboardPage = () => {
 
         <div className="dashboard-page-filter-container">
           <strong>
-            <FaFilter /> Integrantes por Escuadra
-          </strong>
-          <div className="dashboard-page-chart-content">
-            <div className="dashboard-page-chart-bar-content">
-              <span>Integrantes</span>
-              <Chartbar
-                titlesData={titlesData}
-                amountData={amountData}
-              />
-            </div>
-
-            {/* <div className="dashboard-page-chart-bar-content">
-              <span>Aspirantes</span>
-              <Chartbar
-                titlesData={["Aspirantes gastadores", "Aspirantes batonistas"]}
-                amountData={[15, 70]}
-              />
-            </div> */}
-          </div>
-        </div>
-
-        <div className="dashboard-page-filter-container">
-          <div className="dashboard-page-chart-content">
-            <div className="dashboard-page-chart-bar-content">
-              <strong>
-                <FaChartPie /> Distribución por Establecimiento
-              </strong>
-              {/* <ChartPie
-                data={[
-                  { value: 120, name: "Enrique Gomez Carrillo" },
-                  { value: 80, name: "Romulo Gallego" },
-                  { value: 25, name: "Otros" },
-                ]}
-              /> */}
-              <ChartPie
-                data={chartData} />
-            </div>
-
-            <div className="dashboard-page-chart-bar-content">
-              <strong>
-                <FaCalendar /> Nuevos vs Antiguos Integrantes
-              </strong>
-              <ChartPie
-                data={newVsOldData}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-page-filter-container">
-          <strong>
             <FaCalendar /> Resumen Estadístico
           </strong>
 
@@ -256,8 +231,73 @@ export const DashboardPage = () => {
               <span className="number">{totalOldMembers}</span>
               <p className="title">Integrantes Antiguos</p>
             </div>
+
+            <div className="dashboard-page-summary-card">
+              <span className="number">{memberDataList.filter((m) => m.categoria === 1).length}</span>
+              <p className="title">Categoría A</p>
+            </div>
+
+            <div className="dashboard-page-summary-card">
+              <span className="number">{memberDataList.filter((m) => m.categoria === 2).length}</span>
+              <p className="title">Categoría B</p>
+            </div>
+
+            <div className="dashboard-page-summary-card">
+              <span className="number">{memberDataList.filter((m) => m.categoria === 3).length}</span>
+              <p className="title">Fábrica</p>
+            </div>
           </div>
         </div>
+
+        <div className="dashboard-page-filter-container">
+          <strong>
+            <FaFilter /> Integrantes por Escuadra
+          </strong>
+          <div className="dashboard-page-chart-content">
+            <div className="dashboard-page-chart-bar-content">
+              <span>Integrantes</span>
+              <Chartbar
+                titlesData={titlesData}
+                amountData={amountData}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="dashboard-page-filter-container">
+          <div className="dashboard-page-chart-content">
+            <div className="dashboard-page-chart-bar-content">
+              <strong>
+                <FaChartPie /> Integrantes por categoría
+              </strong>
+              <ChartPie
+                data={categoryData} />
+            </div>
+          </div>
+        </div>
+
+        <div className="dashboard-page-filter-container">
+          <div className="dashboard-page-chart-content">
+            <div className="dashboard-page-chart-bar-content">
+              <strong>
+                <FaChartPie /> Distribución por Establecimiento
+              </strong>
+              <ChartPie
+                data={chartData} />
+            </div>
+
+            <div className="dashboard-page-chart-bar-content">
+              <strong>
+                <FaCalendar /> Nuevos vs Antiguos Integrantes
+              </strong>
+              <ChartPie
+                data={newVsOldData}
+              />
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { lazy, LazyExoticComponent } from "react";
 import { FaTools } from "react-icons/fa";
-import { FaBiohazard, FaChartSimple, FaUserGroup } from "react-icons/fa6";
+import { FaBiohazard, FaChartSimple, FaFortAwesome, FaHammer, FaUserGroup } from "react-icons/fa6";
 
 type JSXComponent = () => JSX.Element;
 
@@ -17,6 +17,8 @@ const memberPage = lazy(() => import("../pages/members/MemberPage"));
 const dashboardPage = lazy(() => import("../pages/dashboard/DashboardPage"));
 const profilePage = lazy(() => import("../pages/profile/ProfilePage"));
 const instructorsPage = lazy(() => import("../pages/instructors/InstructorsPage"));
+const festivalPage = lazy(() => import("../pages/festival/FestivalPage"));
+const implementsPage = lazy(() => import("../pages/implements/ImplementsPage"));
 //const connectionsPage = lazy(() => import("../pages/conections/ConnectionsPage"));
 
 
@@ -44,6 +46,14 @@ export const routes: Route[] = [
     name: "Instructores",
     icon: <FaBiohazard className="icon" />,
     roles: [1, 2, 3]
+  },
+  {
+    to: "/implements",
+    path: "implements",
+    component: implementsPage,
+    name: "Implementos",
+    icon: <FaHammer className="icon" />,
+    roles: [1, 2]
   },
   {
     to: "/profile",
