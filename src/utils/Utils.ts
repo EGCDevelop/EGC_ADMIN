@@ -1,9 +1,8 @@
 import QRCodeStyling from "qr-code-styling";
 import ComboboxData from "../interfaces/ComboboxData";
-import logo from '../assets/egc.jpeg';
+import logo from "../assets/egc.jpeg";
 
 class Utils {
-
   public static normalize = (value: string | null): string | null =>
     value === "" || value === null ? null : value;
 
@@ -17,7 +16,7 @@ class Utils {
   public static isEightDigits = (tel: string): boolean => {
     const re = /^\d{8}$/;
     return re.test(tel);
-  }
+  };
 
   public static isValidPassword = (password: string): boolean => {
     const passwordRegex =
@@ -38,7 +37,7 @@ class Utils {
     ];
 
     return stateData;
-  }
+  };
 
   public static categoryDataList = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
@@ -57,7 +56,7 @@ class Utils {
     ];
 
     return stateData;
-  }
+  };
 
   public static instructorStateDataList = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
@@ -72,24 +71,24 @@ class Utils {
     ];
 
     return stateData;
-  }
+  };
 
   public static rolInstructorCombobox = (): ComboboxData[] => {
     return [
       {
         id: 1,
-        value: "Admin"
+        value: "Admin",
       },
       {
         id: 2,
-        value: "Instructor"
+        value: "Instructor",
       },
       {
         id: 3,
-        value: "Apoyo"
-      }
+        value: "Apoyo",
+      },
     ];
-  }
+  };
 
   public static getInstructorRolName = (rol: number): string => {
     switch (rol) {
@@ -102,82 +101,82 @@ class Utils {
       default:
         return "";
     }
-  }
+  };
 
   public static instructorAreaCombobox = (): ComboboxData[] => {
     return [
       {
         id: 1,
-        value: "Percusión"
+        value: "Percusión",
       },
       {
         id: 2,
-        value: "Gastadores"
+        value: "Gastadores",
       },
       {
         id: 3,
-        value: "Batonistas"
+        value: "Batonistas",
       },
       {
         id: 4,
-        value: "Vientos"
+        value: "Vientos",
       },
       {
         id: 5,
-        value: "Liras"
+        value: "Liras",
       },
       {
         id: 6,
-        value: "Bombos"
+        value: "Bombos",
       },
       {
         id: 7,
-        value: "General"
-      }
+        value: "General",
+      },
     ];
-  }
+  };
 
   public static getPassword = (squadId: number): string => {
     let password: string = "";
     switch (squadId) {
       case 1:
-        password = "gas1234"
+        password = "gas1234";
         break;
       case 2:
-        password = "bato1234"
+        password = "bato1234";
         break;
       case 3:
-        password = "vien1234"
+        password = "vien1234";
         break;
       case 4:
-        password = "xilo1234"
+        password = "xilo1234";
         break;
       case 5:
-        password = "lir1234"
+        password = "lir1234";
         break;
       case 6:
-        password = "marc1234"
+        password = "marc1234";
         break;
       case 7:
-        password = "tam1234"
+        password = "tam1234";
         break;
       case 8:
-        password = "redo1234"
+        password = "redo1234";
         break;
       case 9:
-        password = "bomb1234"
+        password = "bomb1234";
         break;
       case 10:
-        password = "bom1234"
+        password = "bom1234";
         break;
       case 11:
-        password = "gen1234"
+        password = "gen1234";
         break;
       case 12:
-        password = "gas1234"
+        password = "gas1234";
         break;
       case 13:
-        password = "bato1234"
+        password = "bato1234";
         break;
 
       default:
@@ -185,9 +184,12 @@ class Utils {
     }
 
     return password;
-  }
+  };
 
-  public static downloadQR = async (data: string, format: "png" | "jpeg" | "svg" | "webp") => {
+  public static downloadQR = async (
+    data: string,
+    format: "png" | "jpeg" | "svg" | "webp",
+  ) => {
     const qrExport = new QRCodeStyling({
       width: 500, // resolución grande
       height: 500,
@@ -217,20 +219,20 @@ class Utils {
     });
 
     await qrExport.download({ name: "qr-member", extension: format });
-  }
+  };
 
   public static medicalConditionOptions = (): ComboboxData[] => {
     return [
       {
         id: 1,
-        value: "Con complicación"
+        value: "Con complicación",
       },
       {
         id: 2,
-        value: "Sin complicaciones"
+        value: "Sin complicaciones",
       },
     ];
-  }
+  };
 
   public static belongsLine = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
@@ -245,7 +247,7 @@ class Utils {
     ];
 
     return stateData;
-  }
+  };
 
   public static lineManager = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
@@ -260,7 +262,7 @@ class Utils {
     ];
 
     return stateData;
-  }
+  };
 
   public static typeLines = (): ComboboxData[] => {
     const stateData: ComboboxData[] = [
@@ -275,7 +277,7 @@ class Utils {
       {
         id: 3,
         value: "Liras & Xilófonos ",
-      }
+      },
     ];
 
     return stateData;
@@ -288,6 +290,6 @@ class Utils {
     })}`;
   };
 
-}
+  };
 
 export default Utils;

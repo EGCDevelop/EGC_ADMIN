@@ -7,6 +7,18 @@ import {
   FaPlus,
   FaUser,
 } from "react-icons/fa6";
+import { CustomInput } from "../components/CustomInput";
+import { useForm } from "../../hooks/useForm";
+import PaymentHistoryDTO, {
+  INITIAL_FORM,
+} from "../../interfaces/DTOs/PaymentHistoryDTO";
+import { CustomDatePicker } from "../components/CustomDatePicker";
+import { CustomTextarea } from "../components/CustomTextarea";
+import PaymentUtils from "../../utils/paymentUtils";
+import { useParams } from "react-router-dom";
+import PaymentHistory from "../../interfaces/uniform/PaymentHistory.types";
+import PaymentHistoryDetails from "../../interfaces/uniform/PaymentHistoryDetails.types";
+import SavePaymentHistory from "../../interfaces/uniform/SavePaymentHistory.types";
 
 type OrderItem = {
   id: string;
@@ -64,52 +76,40 @@ const MOCK_PAYMENTS: Payment[] = [
   },
 ];
 
-const DENOMINATIONS = [1, 5, 10, 20, 50, 100, 200];
+const BILLS: {
+  value: number;
+  inKey: keyof PaymentHistoryDTO;
+  outKey: keyof PaymentHistoryDTO;
+}[] = [
+  { value: 1, inKey: "numberOneBills", outKey: "numberOneOutputBills" },
+  { value: 5, inKey: "numberFiveBills", outKey: "numberFiveOutputBills" },
+  { value: 10, inKey: "numberTenBills", outKey: "numberTenOutputBills" },
+  { value: 20, inKey: "numberTwentyBills", outKey: "numberTwentyOutputBills" },
+  { value: 50, inKey: "numberFiftyBills", outKey: "numberFiftyOutputBills" },
+  {
+    value: 100,
+    inKey: "numberOneHundredBills",
+    outKey: "numberOneHundredOutputBills",
+  },
+  {
+    value: 200,
+    inKey: "numberTwoHundredBills",
+    outKey: "numberTwoHundredOutputBills",
+  },
+];
 
-const money = (value: number) => `Q${value.toFixed(2)}`;
-const cashTotal = (details: Record<number, number>) =>
-  DENOMINATIONS.reduce(
-    (sum, denomination) => sum + denomination * (details[denomination] || 0),
-    0,
-  );
-const describeCash = (details?: Record<number, number>) =>
-  Object.entries(details || {})
-    .filter(([, quantity]) => Number(quantity) > 0)
-    .map(
-      ([denomination, quantity]) =>
-        `${quantity} × Q${denomination} = ${money(Number(denomination) * Number(quantity))}`,
-    )
-    .join(", ");
+export const PaymentControlPage = () => {
+  const { orderId } = useParams<{ orderId: string }>();
+  const { formData, onChange, onCustomChange, onTextAreaChange } =
+    useForm<PaymentHistoryDTO>(INITIAL_FORM);
 
-type Props = {
-  /** Texto del botón de regreso: "Volver a pedidos" (desde Pedidos de Uniforme) o "Volver a usuarios" */
-  backLabel?: string;
-  onBack?: () => void;
-  /** Arranca sin pedido para revisar el estado vacío (selección de implementos) */
-  startEmpty?: boolean;
-};
-
-export const PaymentControlPage = ({
-  backLabel = "Volver a pedidos",
-  onBack,
-  startEmpty = false,
-}: Props) => {
   const selectedUser = MOCK_MEMBER;
 
-  const [uniformItems, setUniformItems] = useState<OrderItem[]>(
-    startEmpty ? [] : MOCK_ITEMS,
-  );
-  const [uniformPayments, setUniformPayments] = useState<Payment[]>(
-    startEmpty ? [] : MOCK_PAYMENTS,
-  );
+  const [uniformItems, setUniformItems] = useState<OrderItem[]>(MOCK_ITEMS);
+  const [uniformPayments, setUniformPayments] =
+    useState<Payment[]>(MOCK_PAYMENTS);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const [paymentDate, setPaymentDate] = useState(
-    new Date().toISOString().slice(0, 10),
-  );
-  const [receivedCash, setReceivedCash] = useState<Record<number, number>>({});
-  const [changeCash, setChangeCash] = useState<Record<number, number>>({});
-  const [paymentNotes, setPaymentNotes] = useState("");
+
   const [paymentError, setPaymentError] = useState("");
   const [isGeneratingStatement, setIsGeneratingStatement] = useState(false);
   const [showStatement, setShowStatement] = useState(false);
@@ -121,12 +121,7 @@ export const PaymentControlPage = ({
     0,
   );
   const balance = Math.max(0, total - paid);
-  const paymentStatus =
-    paid === 0
-      ? "Pendiente de pago"
-      : paid >= total
-        ? "Pagado"
-        : "Pago parcial";
+
   const deliveredCount = uniformItems.filter((item) => item.delivered).length;
   const deliveryStatus =
     deliveredCount === 0
@@ -135,26 +130,32 @@ export const PaymentControlPage = ({
         ? "Entregado completo"
         : "Entrega parcial";
 
-  const receivedTotal = cashTotal(receivedCash);
-  const amount = Number(paymentAmount);
-  const change = Math.max(
-    0,
-    receivedTotal - (Number.isFinite(amount) ? amount : 0),
-  );
-  const changeTotal = cashTotal(changeCash);
+  const amount = PaymentUtils.toNumber(formData.paidAmount);
 
-  /* ---------- Acciones ---------- */
+  const receivedDetails = Object.fromEntries(
+    BILLS.map((b) => [b.value, PaymentUtils.toNumber(formData[b.inKey])]),
+  ) as Record<number, number>;
+
+  const changeDetails = Object.fromEntries(
+    BILLS.map((b) => [b.value, PaymentUtils.toNumber(formData[b.outKey])]),
+  ) as Record<number, number>;
+
+  const sumBills = (details: Record<number, number>) =>
+    BILLS.reduce((sum, b) => sum + b.value * (details[b.value] || 0), 0);
+
+  const receivedTotal = sumBills(receivedDetails);
+  const change = Math.max(0, receivedTotal - amount);
+  const changeTotal = sumBills(changeDetails);
+
   const addPayment = () => {
     setPaymentError("");
-    if (
-      !Number.isInteger(amount) ||
-      amount <= 0 ||
-      amount > balance ||
-      !paymentDate
-    )
+    if (!Number.isInteger(amount) || amount <= 0 || amount > balance)
       return setPaymentError(
         "El monto del pago debe ser válido y no superar el saldo pendiente.",
       );
+
+    if (!formData.paidDate) return setPaymentError("Ingresa una fecha de pago");
+
     if (receivedTotal <= 0)
       return setPaymentError(
         "Registra al menos un billete en el efectivo recibido.",
@@ -167,22 +168,65 @@ export const PaymentControlPage = ({
       return setPaymentError(
         "El desglose del vuelto no coincide con el vuelto calculado.",
       );
-    const payment: Payment = {
-      amount,
-      date: paymentDate,
-      paymentMethod: "Efectivo",
+
+    const dataPaymentHistory: PaymentHistory = {
+      id: 0,
+      paidAmount: formData.paidAmount,
       cashReceived: receivedTotal,
-      change,
-      notes: paymentNotes,
-      receivedDetails: receivedCash,
-      changeDetails: changeCash,
+      chancheMoney: change,
+      paidDate: formData.paidDate,
+      paymentNumber: 0,
+      observations: formData.observations,
+      orderId: Number(orderId),
+      userReceived: 251,
     };
-    setUniformPayments((current) => [...current, payment]);
-    setPaymentAmount("");
-    setReceivedCash({});
-    setChangeCash({});
-    setPaymentNotes("");
-    setShowPaymentForm(false);
+
+    const dataInflow: PaymentHistoryDetails = {
+      id: 0,
+      paymentHistoryId: 0,
+      typeMovement: 1,
+      numberOneBills: formData.numberOneBills,
+      numberFiveBills: formData.numberFiveBills,
+      numberTenBills: formData.numberTenBills,
+      numberTwentyBills: formData.numberTwentyBills,
+      numberFiftyBills: formData.numberFiftyBills,
+      numberOneHundredBills: formData.numberOneHundredBills,
+      twoHundredBills: formData.numberTwoHundredBills,
+    };
+
+    const dataOutflow: PaymentHistoryDetails = {
+      id: 0,
+      paymentHistoryId: 0,
+      typeMovement: 2,
+      numberOneBills: formData.numberOneOutputBills,
+      numberFiveBills: formData.numberFiveOutputBills,
+      numberTenBills: formData.numberTenOutputBills,
+      numberTwentyBills: formData.numberTwentyOutputBills,
+      numberFiftyBills: formData.numberFiftyOutputBills,
+      numberOneHundredBills: formData.numberOneHundredOutputBills,
+      twoHundredBills: formData.numberTwoHundredOutputBills,
+    };
+
+    // console.log(`dataPaymentHistory == ${JSON.stringify(dataPaymentHistory)}`);
+    // console.log(`dataInflow == ${JSON.stringify(dataInflow)}`);
+    // console.log(`dataOutflow == ${JSON.stringify(dataOutflow)}`);
+
+    const saveData: SavePaymentHistory = {
+      payment: dataPaymentHistory,
+      inflow: dataInflow,
+      outflow: dataOutflow,
+    };
+
+    console.log(`saveData == ${JSON.stringify(saveData)}`);
+
+    //resetForm();
+    //setShowPaymentForm(false);
+  };
+
+  const resetForm = () => {
+    (Object.keys(INITIAL_FORM) as (keyof PaymentHistoryDTO)[]).forEach((key) =>
+      onCustomChange(key, INITIAL_FORM[key]),
+    );
   };
 
   // Maqueta: simula la generación del PDF. Aquí iría la generación real (jsPDF).
@@ -228,10 +272,9 @@ export const PaymentControlPage = ({
           <button
             type="button"
             className={`${styles.button} ${styles.buttonOutline}`}
-            onClick={onBack}
           >
             <FaArrowLeft className={styles.iconLeft} />
-            {backLabel}
+            Volver
           </button>
         </div>
       </div>
@@ -258,7 +301,11 @@ export const PaymentControlPage = ({
           <div className={styles.cardHeaderRow}>
             <div>
               <h2 className={styles.cardTitle}>Pedido actual</h2>
-              <p className={styles.cardSub}>{uniformItems.length ? "Implementos solicitados" : "Aún no hay un pedido activo"}</p>
+              <p className={styles.cardSub}>
+                {uniformItems.length
+                  ? "Implementos solicitados"
+                  : "Aún no hay un pedido activo"}
+              </p>
             </div>
             {!uniformItems.length && (
               <button
@@ -287,13 +334,18 @@ export const PaymentControlPage = ({
                   {uniformItems.map((item) => (
                     <tr key={item.id}>
                       <td className={styles.tdName}>{item.name}</td>
-                      <td>{money(item.price)}</td>
+                      <td>{PaymentUtils.getMoney(item.price)}</td>
                       <td>
-                        <span className={styles.textMuted}>{paymentStatus}</span>
+                        <span className={styles.textMuted}>
+                          {/* {paymentStatus} */}
+                          {PaymentUtils.paymentStatus(paid, total)}
+                        </span>
                       </td>
                       <td>
                         {item.delivered ? (
-                          <span className={styles.textDelivered}>Entregado · {item.deliveredAt}</span>
+                          <span className={styles.textDelivered}>
+                            Entregado · {item.deliveredAt}
+                          </span>
                         ) : (
                           <span className={styles.textPending}>Pendiente</span>
                         )}
@@ -304,7 +356,9 @@ export const PaymentControlPage = ({
                           className={`${styles.button} ${styles.buttonSm} ${styles.buttonOutline}`}
                           disabled={!item.delivered && paid < item.price}
                         >
-                          {item.delivered ? "Revertir entrega" : "Marcar entregado"}
+                          {item.delivered
+                            ? "Revertir entrega"
+                            : "Marcar entregado"}
                         </button>
                       </td>
                     </tr>
@@ -323,19 +377,21 @@ export const PaymentControlPage = ({
           <div className={styles.sideBody}>
             <div className={styles.sideRow}>
               <span className={styles.sideLabel}>Total del pedido</span>
-              <strong>{money(total)}</strong>
+              <strong>{PaymentUtils.getMoney(total)}</strong>
             </div>
             <div className={styles.sideRow}>
               <span className={styles.sideLabel}>Total pagado</span>
-              <strong>{money(paid)}</strong>
+              <strong>{PaymentUtils.getMoney(paid)}</strong>
             </div>
             <div className={`${styles.sideRow} ${styles.sideRowTotal}`}>
               <span className={styles.sideLabel}>Saldo pendiente</span>
-              <strong>{money(balance)}</strong>
+              <strong>{PaymentUtils.getMoney(balance)}</strong>
             </div>
             <div className={styles.statusBox}>
               <p className={styles.sideLabel}>Estado financiero</p>
-              <p className={styles.statusValue}>{paymentStatus}</p>
+              <p className={styles.statusValue}>
+                {PaymentUtils.paymentStatus(paid, total)}
+              </p>
               <p className={`${styles.sideLabel} ${styles.statusLabelSpaced}`}>
                 Estado de entrega
               </p>
@@ -363,56 +419,58 @@ export const PaymentControlPage = ({
             Registrar pago
           </h2>
           <div className={styles.formGrid2}>
-            <div>
-              <label className={styles.fieldLabel}>Monto del pago</label>
-              <input
-                className={styles.input}
-                type="number"
-                min="1"
-                step="1"
-                value={paymentAmount}
-                onChange={(event) => setPaymentAmount(event.target.value)}
-              />
-            </div>
-            <div>
-              <label className={styles.fieldLabel}>Fecha</label>
-              <input
-                className={styles.input}
-                type="date"
-                value={paymentDate}
-                onChange={(event) => setPaymentDate(event.target.value)}
-              />
-            </div>
+            <CustomInput
+              key="paidAmount"
+              type="number"
+              label="Monto del pago"
+              name="paidAmount"
+              request
+              min={1}
+              step={1}
+              value={formData.paidAmount.toString()}
+              onChange={onChange}
+            />
+            <CustomDatePicker
+              key="paidDate"
+              name="paidDate"
+              label="Fecha de pago"
+              request
+              value={formData.paidDate}
+              onChange={(value) => onCustomChange("paidDate", value)}
+            />
           </div>
 
           <div className={styles.cashSection}>
             <h3 className={styles.cashTitle}>Desglose de efectivo recibido</h3>
             <div className={styles.cashGrid}>
-              {DENOMINATIONS.map((denomination) => (
-                <label key={denomination} className={styles.cashLabel}>
-                  Q{denomination}
-                  <input
-                    className={styles.input}
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={receivedCash[denomination] || ""}
-                  />
-                </label>
+              {BILLS.map((b) => (
+                <CustomInput
+                  key={b.inKey}
+                  type="number"
+                  label={`Q${b.value}`}
+                  name={b.inKey}
+                  min={0}
+                  step={1}
+                  value={String(formData[b.inKey] ?? 0)}
+                  onChange={onChange}
+                />
               ))}
             </div>
             <p className={styles.cashTotal}>
-              Efectivo recibido: <strong>{money(receivedTotal)}</strong>
+              Efectivo recibido:{" "}
+              <strong>{PaymentUtils.getMoney(receivedTotal)}</strong>
             </p>
           </div>
 
           <div className={styles.summaryRow}>
             <span>
               Monto del pago:{" "}
-              <strong>{money(Number.isFinite(amount) ? amount : 0)}</strong>
+              <strong>
+                {PaymentUtils.getMoney(Number.isFinite(amount) ? amount : 0)}
+              </strong>
             </span>
             <span>
-              Vuelto: <strong>{money(change)}</strong>
+              Vuelto: <strong>{PaymentUtils.getMoney(change)}</strong>
             </span>
             {receivedTotal === amount && amount > 0 && (
               <span className={styles.textSuccess}>Pago exacto</span>
@@ -423,33 +481,36 @@ export const PaymentControlPage = ({
             <div className={styles.cashSection}>
               <h3 className={styles.cashTitle}>Desglose del vuelto</h3>
               <div className={styles.cashGrid}>
-                {DENOMINATIONS.map((denomination) => (
-                  <label key={denomination} className={styles.cashLabel}>
-                    Q{denomination}
-                    <input
-                      className={styles.input}
-                      type="number"
-                      min="0"
-                      step="1"
-                      value={changeCash[denomination] || ""}
-                    />
-                  </label>
+                {BILLS.map((b) => (
+                  <CustomInput
+                    key={b.outKey}
+                    type="number"
+                    label={`Q${b.value}`}
+                    name={b.outKey}
+                    min={0}
+                    step={1}
+                    value={String(formData[b.outKey] ?? 0)}
+                    onChange={onChange}
+                  />
                 ))}
               </div>
               <p
                 className={`${styles.cashTotal} ${changeTotal === change ? styles.textSuccess : styles.textDanger}`}
               >
-                Total vuelto entregado: <strong>{money(changeTotal)}</strong>
+                Total vuelto entregado:{" "}
+                <strong>{PaymentUtils.getMoney(changeTotal)}</strong>
               </p>
             </div>
           )}
 
           <div className={styles.notesBlock}>
-            <label className={styles.fieldLabel}>Observaciones</label>
-            <input
-              className={styles.input}
-              value={paymentNotes}
-              onChange={(event) => setPaymentNotes(event.target.value)}
+            <CustomTextarea
+              key="observations"
+              label="Observaciones"
+              name="observations"
+              placeholder="Observaciones..."
+              value={formData.observations ?? ""}
+              onChange={onTextAreaChange}
             />
           </div>
 
@@ -463,7 +524,10 @@ export const PaymentControlPage = ({
             <button
               type="button"
               className={`${styles.button} ${styles.buttonOutline}`}
-              onClick={() => setShowPaymentForm(false)}
+              onClick={() => {
+                setShowPaymentForm(false);
+                resetForm();
+              }}
             >
               Cancelar
             </button>
@@ -492,22 +556,26 @@ export const PaymentControlPage = ({
               >
                 <div>
                   <p className={styles.historyMain}>
-                    {payment.date} · Pago de {money(payment.amount)}
+                    {payment.date} · Pago de{" "}
+                    {PaymentUtils.getMoney(payment.amount)}
                   </p>
                   <p className={styles.historyMeta}>
-                    Efectivo recibido: {money(payment.cashReceived)} · Vuelto:{" "}
-                    {money(payment.change)}
+                    Efectivo recibido:{" "}
+                    {PaymentUtils.getMoney(payment.cashReceived)} · Vuelto:{" "}
+                    {PaymentUtils.getMoney(payment.change)}
                   </p>
                   <p className={styles.historyMeta}>
-                    {describeCash(payment.receivedDetails) || "Sin desglose"}
+                    {PaymentUtils.describeCash(payment.receivedDetails) ||
+                      "Sin desglose"}
                   </p>
                   {payment.change > 0 && (
                     <p className={styles.historyMeta}>
-                      Vuelto entregado: {describeCash(payment.changeDetails)}
+                      Vuelto entregado:{" "}
+                      {PaymentUtils.describeCash(payment.changeDetails)}
                     </p>
                   )}
                 </div>
-                <strong>{money(payment.amount)}</strong>
+                <strong>{PaymentUtils.getMoney(payment.amount)}</strong>
               </div>
             ))}
           </div>

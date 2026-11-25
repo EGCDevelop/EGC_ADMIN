@@ -1,10 +1,11 @@
-import { FormEvent, useState } from "react"
-import { useForm } from "../../../hooks/useForm"
-import ImplementsForm from "../../../interfaces/ImplementsForm"
-import Utils from "../../../utils/Utils"
-import { CustomInput } from "../../components/CustomInput"
-import { CustomSelect } from "../../components/CustomSelect"
-import '../styles/implements-model.css';
+import { FormEvent, useEffect, useState } from "react";
+import { useForm } from "../../../hooks/useForm";
+import ImplementsForm from "../../../interfaces/ImplementsForm";
+import Utils from "../../../utils/Utils";
+import { CustomInput } from "../../components/CustomInput";
+import { CustomSelect } from "../../components/CustomSelect";
+import "../styles/implements-model.css";
+import { useUniformStore } from "../../../hooks/useUniformStore";
 
 interface Props {
   onClose: () => void;
@@ -12,14 +13,15 @@ interface Props {
 }
 
 export const ImplementsModel = ({ onClose, data }: Props) => {
-  const { formData, onChange, onSelectChange } = useForm<ImplementsForm>({
-    id: 0,
-    name: '',
-    price: 0,
-    state: 1
-  });
+  const { InsertUniform, UpdateUniform } = useUniformStore();
+  const { formData, setFormData, onChange, onSelectChange } =
+    useForm<ImplementsForm>({
+      id: 0,
+      name: "",
+      price: 0,
+      state: 1,
+    });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
 
   const insertOrUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,16 +44,31 @@ export const ImplementsModel = ({ onClose, data }: Props) => {
 
     // INSERT
     if (formData.id === 0) {
-
+      InsertUniform(formData);
     }
     // UPDATE
     else {
-
+      UpdateUniform(formData);
     }
-  }
+  };
+
+  useEffect(() => {
+    if (data && data.id !== 0) {
+      setFormData({
+        id: data.id,
+        name: data.name,
+        price: data.price,
+        state: data.state,
+      });
+    }
+  }, [data]);
 
   return (
-    <form method="POST" onSubmit={insertOrUpdate} className="container-form-implements-model">
+    <form
+      method="POST"
+      onSubmit={insertOrUpdate}
+      className="container-form-implements-model"
+    >
       <CustomInput
         type="search"
         label="Nombre"
@@ -85,5 +102,5 @@ export const ImplementsModel = ({ onClose, data }: Props) => {
         <button>Guardar</button>
       </div>
     </form>
-  )
-}
+  );
+};

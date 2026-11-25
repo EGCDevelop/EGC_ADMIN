@@ -5,6 +5,7 @@ import { instructorsSlice } from "./instructors/instructorsSlice";
 import { memberSlice } from "./member/memberSlice";
 import { connectionsSlice } from "./connectionsSlice";
 import { uniformSlice } from "./uniformSlice";
+import { orderSlice } from "./orderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     instructors: instructorsSlice.reducer,
     member: memberSlice.reducer,
     connections: connectionsSlice.reducer,
-    uniform: uniformSlice.reducer
+    uniform: uniformSlice.reducer,
+    order: orderSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>

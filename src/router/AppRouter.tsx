@@ -8,7 +8,6 @@ import DashboardPage from "../pages/dashboard/DashboardPage";
 import MemberPage from "../pages/members/MemberPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import InstructorsPage from "../pages/instructors/InstructorsPage";
-import { ConnectionsPage } from "../pages/conections/ConnectionsPage";
 import { ClosetOptionsPage } from "../pages/closet/ClosetOptionsPage";
 import { ClosetBuilderPage } from "../pages/closet/ClosetBuilderPage";
 import { UniformOrdersPage } from "../pages/closet/UniformOrdersPage";
@@ -42,7 +41,7 @@ export const AppRouter = () => {
                 <Route path="usuarios" element={<MemberPage />} />
                 <Route path="instructors" element={<InstructorsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
-                <Route path="connections" element={<ConnectionsPage />} />
+                <Route path="implements" element={<ImplementsPage />} />
                 <Route path="closetOptions" element={<ClosetOptionsPage />} />
                 <Route
                   path="closetBuilder/:closetId"
@@ -56,7 +55,6 @@ export const AppRouter = () => {
                   path="paymentControl/:orderId?"
                   element={<PaymentControlPage />}
                 />
-                <Route path="implements" element={<ImplementsPage />} />
                 <Route path="/*" element={<Navigate to="/dashboard" />} />
               </>
             )}

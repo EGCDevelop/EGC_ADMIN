@@ -4,12 +4,28 @@ interface Props {
   label?: string;
   request?: boolean;
   name: string;
-  type?: string;
+  type?:
+    | "text"
+    | "number"
+    | "color"
+    | "email"
+    | "search"
+    | "url"
+    | "tel"
+    | "file"
+    | "hidden"
+    | "image"
+    | "password";
   placeholder?: string;
   disabled?: boolean;
   value: string;
   icon?: React.JSX.Element;
   errorMessage?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  minLength?: number;
+  maxLength?: number;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -23,6 +39,11 @@ export const CustomInput = ({
   value,
   icon,
   errorMessage,
+  min,
+  max,
+  step,
+  minLength,
+  maxLength,
   onChange,
 }: Props) => {
   return (
@@ -39,10 +60,17 @@ export const CustomInput = ({
           style={{ paddingLeft: `${icon ? "42px" : "12px"}` }}
           disabled={disabled}
           value={value}
+          min={type === "number" ? min : undefined}
+          max={type === "number" ? max : undefined}
+          step={type === "number" ? step : undefined}
+          minLength={minLength}
+          maxLength={maxLength}
           onChange={onChange}
         />
       </div>
-      {errorMessage && <span className="custom-input-error">{errorMessage}</span>}
+      {errorMessage && (
+        <span className="custom-input-error">{errorMessage}</span>
+      )}
     </div>
   );
 };

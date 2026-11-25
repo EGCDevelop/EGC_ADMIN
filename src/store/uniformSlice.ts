@@ -2,60 +2,73 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import ImplementsForm from "../interfaces/ImplementsForm";
 
 interface UniformSlice {
-    isLoadingUniformSlice: boolean;
-    uniformsList: ImplementsForm[];
-    lastCreatedUniformSlice?: boolean;
-    lastUpdatedUniformSlice?: boolean;
-    errorMessageUniformSlice?: string;
+  isLoadingUniformSlice: boolean;
+  uniformsList: ImplementsForm[];
+  lastCreatedUniformSlice?: boolean;
+  lastUpdatedUniformSlice?: boolean;
+  errorMessageUniformSlice?: string;
 }
 
 const initialState: UniformSlice = {
-    isLoadingUniformSlice: false,
-    uniformsList: [],
-    lastCreatedUniformSlice: false,
-    lastUpdatedUniformSlice: false,
-    errorMessageUniformSlice: undefined
-}
+  isLoadingUniformSlice: false,
+  uniformsList: [],
+  lastCreatedUniformSlice: false,
+  lastUpdatedUniformSlice: false,
+  errorMessageUniformSlice: undefined,
+};
 
 export const uniformSlice = createSlice({
-    name: 'uniform',
-    initialState,
-    reducers: {
-        onLoadingUniformSlice: (state) => {
-            state.isLoadingUniformSlice = true;
-            state.errorMessageUniformSlice = undefined;
-        },
+  name: "uniform",
+  initialState,
+  reducers: {
+    onLoadingUniformSlice: (state) => {
+      state.isLoadingUniformSlice = true;
+      state.errorMessageUniformSlice = undefined;
+      state.lastCreatedUniformSlice = false;
+      state.lastCreatedUniformSlice = false;
+    },
 
-        onSetUniformDataList: (state, action: PayloadAction<ImplementsForm[]>) => {
-            state.isLoadingUniformSlice = false;
-            state.uniformsList = action.payload;
-            state.errorMessageUniformSlice = undefined;
-            state.lastCreatedUniformSlice = false;
-            state.lastCreatedUniformSlice = false;
-        },
+    onSetUniformDataList: (state, action: PayloadAction<ImplementsForm[]>) => {
+      state.isLoadingUniformSlice = false;
+      state.uniformsList = action.payload;
+      state.errorMessageUniformSlice = undefined;
+      state.lastCreatedUniformSlice = false;
+      state.lastCreatedUniformSlice = false;
+    },
 
-        onCreateUniform: (state, action: PayloadAction<boolean>) => {
-            state.isLoadingUniformSlice = false;
-            state.lastCreatedUniformSlice = action.payload;
-        },
+    onCreateUniform: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingUniformSlice = false;
+      state.lastUpdatedUniformSlice = false;
+      state.lastCreatedUniformSlice = action.payload;
+    },
 
-        onUpdateUniform: (state, action: PayloadAction<boolean>) => {
-            state.isLoadingUniformSlice = false;
-            state.lastUpdatedUniformSlice = action.payload;
-        },
+    onUpdateUniform: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingUniformSlice = false;
+      state.lastCreatedUniformSlice = false;
+      state.lastUpdatedUniformSlice = action.payload;
+    },
 
-        onErrorMessageUniformSlice: (state, action: PayloadAction<string | undefined>) => {
-            state.isLoadingUniformSlice = false;
-            state.errorMessageUniformSlice = action.payload;
-        }
-    }
+    onErrorMessageUniformSlice: (
+      state,
+      action: PayloadAction<string | undefined>,
+    ) => {
+      state.isLoadingUniformSlice = false;
+      state.errorMessageUniformSlice = action.payload;
+    },
+
+    onResetShowAlert: (state) => {
+      state.lastCreatedUniformSlice = false;
+      state.lastUpdatedUniformSlice = false;
+    },
+  },
 });
 
 export const {
-    onLoadingUniformSlice,
-    onSetUniformDataList,
-    onCreateUniform,
-    onUpdateUniform,
-    onErrorMessageUniformSlice
+  onLoadingUniformSlice,
+  onSetUniformDataList,
+  onCreateUniform,
+  onUpdateUniform,
+  onErrorMessageUniformSlice,
+  onResetShowAlert,
 } = uniformSlice.actions;
 export default uniformSlice.reducer;
