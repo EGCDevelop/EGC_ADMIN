@@ -6,6 +6,7 @@ import { memberSlice } from "./member/memberSlice";
 import { connectionsSlice } from "./connectionsSlice";
 import { uniformSlice } from "./uniformSlice";
 import { orderSlice } from "./orderSlice";
+import { closetSlice } from "./closetSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     connections: connectionsSlice.reducer,
     uniform: uniformSlice.reducer,
     order: orderSlice.reducer,
+    closet: closetSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>

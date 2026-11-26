@@ -3,70 +3,102 @@ import { FaShieldAlt } from "react-icons/fa";
 import { CgMusic } from "react-icons/cg";
 import { GrTarget } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { useClosetStore } from "../../hooks/useClosetStore";
+import { CustomLoader } from "../components/CustomLoader";
+import { useEffect, useState } from "react";
+import ClosetSummary from "../../interfaces/DTOs/ClosetSummary.types";
+import PaymentUtils from "../../utils/paymentUtils";
+import { IconType } from "react-icons";
+import ErrorData from "../../interfaces/ErrorData.types";
+import { CustomAlert } from "../components/CustomAlert";
 import styles from "./styles/closet-options-page.module.css";
 
-const closets = [
-  {
-    id: 1,
-    name: "Gastadores",
-    icon: FaShieldAlt,
-    count: 4,
-    total: "Q450.00",
-  },
-  {
-    id: 2,
-    name: "Batonistas",
-    icon: GrTarget,
-    count: 3,
-    total: "Q350.00",
-  },
-  { id: 6, name: "Banda", icon: CgMusic, count: 0, total: "Q0.00" },
-];
+const icons: IconType[] = [FaShieldAlt, GrTarget, CgMusic];
 
 export const ClosetOptionsPage = () => {
   const navigate = useNavigate();
+  const {
+    isLoadingClosetSlice,
+    closetDataOptions,
+    errorMessageClosetSlice,
+    GetClosetSummary,
+  } = useClosetStore();
+
+  const [aler, setAlert] = useState<ErrorData | null>(null);
+
+  useEffect(() => {
+    GetClosetSummary();
+  }, []);
+
+  useEffect(() => {
+    if (errorMessageClosetSlice) {
+      setAlert({
+        title: "Error",
+        message: errorMessageClosetSlice,
+        status: "error",
+      });
+    }
+  }, [errorMessageClosetSlice]);
+
   return (
-    <main className={styles.page}>
-      <header>
-        <p className={styles.eyebrow}>Catálogo</p>
-        <h1 className={styles.title}>Configuración de Clósets</h1>
-        <p className={styles.subtitle}>
-          Selecciona una escuadra para administrar los implementos que conforman
-          su clóset.
-        </p>
-      </header>
+    <>
+      {isLoadingClosetSlice && <CustomLoader />}
+      {aler && (
+        <CustomAlert
+          title={aler.title}
+          message={aler.message}
+          status={aler.status}
+          onClose={() => setAlert(null)}
+        />
+      )}
+      <main className={styles.page}>
+        <header>
+          <p className={styles.eyebrow}>Catálogo</p>
+          <h1 className={styles.title}>Configuración de Clósets</h1>
+          <p className={styles.subtitle}>
+            Selecciona una escuadra para administrar los implementos que
+            conforman su clóset.
+          </p>
+        </header>
 
-      <section className={styles.grid}>
-        {closets.map(({ id, name, icon: Icon, count, total }) => (
-          <article key={id} className={styles.card}>
-            <div className={styles.iconBox}>
-              <Icon className={styles.icon} strokeWidth={1.25} />
-            </div>
-            <h2 className={styles.cardTitle}>{name}</h2>
-            <p className={styles.cardText}>Configuración de implementos</p>
-            <div className={styles.stats}>
-              <span>{count} implementos</span>
-              <span className={styles.statsValue}>{total}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => navigate(`/closetBuilder/${id}`)}
-              className={`${styles.button} ${styles.buttonOutline} ${styles.buttonFull}`}
-            >
-              Configurar clóset
-            </button>
-          </article>
-        ))}
-      </section>
+        <section className={styles.grid}>
+          {closetDataOptions.map((item: ClosetSummary) => {
+            const GetIcon =
+              item.id === 1 ? icons[0] : item.id === 2 ? icons[1] : icons[2];
+            return (
+              <article key={item.id} className={styles.card}>
+                <div className={styles.iconBox}>
+                  <GetIcon className={styles.icon} strokeWidth={1.25} />
+                </div>
+                <h2 className={styles.cardTitle}>{item.escuadra}</h2>
+                <p className={styles.cardText}>Configuración de implementos</p>
+                <div className={styles.stats}>
+                  <span>{item.cantidad} implementos</span>
+                  <span className={styles.statsValue}>
+                    {PaymentUtils.getMoney(item.precio)}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/closetBuilder/${item.id}`)}
+                  className={`${styles.button} ${styles.buttonOutline} ${styles.buttonFull}`}
+                >
+                  Configurar clóset
+                </button>
+              </article>
+            );
+          })}
+        </section>
 
-      <button
-        type="button"
-        onClick={() => navigate(-1)}
-        className={`${styles.button} ${styles.buttonGhost}`}
-      >
-        <FaArrowLeft className={styles.buttonIcon} />
-        Volver a implementos
-      </button>
-    </main>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className={`${styles.button} ${styles.buttonGhost}`}
+        >
+          <FaArrowLeft className={styles.buttonIcon} />
+          Volver a implementos
+        </button>
+      </main>
+    </>
   );
 };
