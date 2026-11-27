@@ -11,15 +11,10 @@ import PaymentUtils from "../../utils/paymentUtils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useClosetStore } from "../../hooks/useClosetStore";
 import Closet from "../../interfaces/uniform/Closet.types";
+import { getSquadId } from "../../utils/getSquadId";
 
 const CLOSET_NAME = ["Gastadores", "Batonistas", "Banda"];
 const ClosetIcon = BiShield;
-
-const getSquadId = (closetId: number): number => {
-  if ([1, 12, 14, 16].includes(closetId)) return 1;
-  if ([2, 13, 15].includes(closetId)) return 2;
-  return 6;
-};
 
 export const ClosetBuilderPage = () => {
   const navigate = useNavigate();
@@ -108,14 +103,6 @@ export const ClosetBuilderPage = () => {
   };
 
   const saveCloset = () => {
-    const payload: Closet[] = closetItems.map((c) => ({
-      id: c.id ?? 0,
-      uniformId: c.uniformId,
-      squadId: c.squadId || getSquadId(Number(closetId)),
-      estado: c.estado,
-    }));
-    console.log(payload);
-
     UpdateCloset(closetItems);
 
     if (closetUpdated) {
@@ -237,7 +224,7 @@ export const ClosetBuilderPage = () => {
           </div>
         </header>
 
-          {/* Panel: implementos disponibles (soltar aquí = quitar del clóset) */}
+        {/* Panel: implementos disponibles (soltar aquí = quitar del clóset) */}
         <section className={styles.panels}>
           <div
             className={`${styles.panel} ${draggingId ? styles.panelDragging : ""}`}

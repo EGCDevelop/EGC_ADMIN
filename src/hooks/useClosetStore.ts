@@ -8,6 +8,7 @@ import {
   onSetclosetDataOptions,
   onSetClosetUpdated,
   onSetDataListClosetSlice,
+  onSetDtoDataListClosetSlice,
 } from "../store/closetSlice";
 import Closet from "../interfaces/uniform/Closet.types";
 
@@ -17,6 +18,7 @@ export const useClosetStore = () => {
   const {
     isLoadingClosetSlice,
     dataListClosetSlice,
+    dtoDataListClosetSlice,
     closetUpdated,
     closetDataOptions,
     errorMessageClosetSlice,
@@ -54,6 +56,41 @@ export const useClosetStore = () => {
       }
 
       dispatch(onSetDataListClosetSlice(data.list ?? []));
+    } catch (error) {
+      dispatch(onErrorMessageClosetSlice((error as Error).message));
+    }
+  };
+
+  const GetClosetDto = async (squadId: number, squadName: string) => {
+    dispatch(onLoadingClosetSlice());
+
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append("squadId", squadId.toString());
+
+      const response = await fetch(
+        `${apiUrl}/Closet/get_closet_dto?${queryParams.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        dispatch(
+          onErrorMessageClosetSlice(
+            data.message || `Error al obtener el closet ${squadName}`,
+          ),
+        );
+
+        return;
+      }
+      
+      dispatch(onSetDtoDataListClosetSlice(data.list ?? []));
     } catch (error) {
       dispatch(onErrorMessageClosetSlice((error as Error).message));
     }
@@ -122,11 +159,13 @@ export const useClosetStore = () => {
   return {
     isLoadingClosetSlice,
     dataListClosetSlice,
+    dtoDataListClosetSlice,
     closetUpdated,
     closetDataOptions,
     errorMessageClosetSlice,
 
     GetCloset,
+    GetClosetDto,
     UpdateCloset,
     GetClosetSummary,
     ResetAlert,

@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Closet from "../interfaces/uniform/Closet.types";
 import ClosetSummary from "../interfaces/DTOs/ClosetSummary.types";
+import ClosetDTO from "../interfaces/DTOs/ClosetDTO.types";
 
 interface ClosetSlice {
   isLoadingClosetSlice: boolean;
   dataListClosetSlice: Closet[];
+  dtoDataListClosetSlice: ClosetDTO[];
   closetDataOptions: ClosetSummary[];
   closetUpdated: boolean;
   errorMessageClosetSlice?: string | undefined;
@@ -13,6 +15,7 @@ interface ClosetSlice {
 const initialState: ClosetSlice = {
   isLoadingClosetSlice: false,
   dataListClosetSlice: [],
+  dtoDataListClosetSlice: [],
   closetDataOptions: [],
   closetUpdated: false,
   errorMessageClosetSlice: undefined,
@@ -31,6 +34,12 @@ export const closetSlice = createSlice({
     onSetDataListClosetSlice: (state, action: PayloadAction<Closet[]>) => {
       state.isLoadingClosetSlice = false;
       state.dataListClosetSlice = action.payload;
+      state.errorMessageClosetSlice = undefined;
+    },
+
+    onSetDtoDataListClosetSlice: (state, action: PayloadAction<ClosetDTO[]>) => {
+      state.isLoadingClosetSlice = false;
+      state.dtoDataListClosetSlice = action.payload;
       state.errorMessageClosetSlice = undefined;
     },
 
@@ -64,6 +73,7 @@ export const closetSlice = createSlice({
 export const {
   onLoadingClosetSlice,
   onSetDataListClosetSlice,
+  onSetDtoDataListClosetSlice,
   onSetClosetUpdated,
   onSetclosetDataOptions,
   onErrorMessageClosetSlice,

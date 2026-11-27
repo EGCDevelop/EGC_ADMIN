@@ -5,7 +5,7 @@ type UniformOrder = {
   amountPending: number;
   memberId: number;
   creationDate: string;
-  fullDeliveryDate?: string;
+  fullDeliveryDate?: string | null | undefined;
   instructorId: number;
   financialState: number; // 1 - awaiting payment | 2 - partial payment | 3 - canceled
   deliveryState: number; // 1 - pending | 2 - partial delivered | 3 - complete

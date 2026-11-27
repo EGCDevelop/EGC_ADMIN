@@ -3,15 +3,22 @@ import { AppDispatch, RootState } from "../store/store";
 import {
   onErrorOrderSlice,
   onLoadingOrderSlice,
+  onResetSave,
   onSetDataListOrderSlice,
+  onSetOrderCreated,
 } from "../store/orderSlice";
 import Config from "../utils/Config";
+import SaveOrdenDTO from "../interfaces/DTOs/SaveOrdenDTO.types";
 
 const apiUrl = Config.apiUrl;
 
 export const useOrderStore = () => {
-  const { isLoadingOrderSlice, dataListOrderSlice, errorMessageOrderSlice } =
-    useSelector((state: RootState) => state.order);
+  const {
+    isLoadingOrderSlice,
+    dataListOrderSlice,
+    orderCreated,
+    errorMessageOrderSlice,
+  } = useSelector((state: RootState) => state.order);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -56,11 +63,45 @@ export const useOrderStore = () => {
     }
   };
 
+  const SaveOrder = async (data: SaveOrdenDTO) => {
+    dispatch(onLoadingOrderSlice());
+    console.log(data);
+    try {
+      const response = await fetch(`${apiUrl}/Order/save_order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        //console.log("Detalle del 400:", result);
+        console.log(JSON.stringify(result.errors, null, 2));
+        dispatch(
+          onErrorOrderSlice(result.message ?? `Error al crear pedido ...`),
+        );
+        return;
+      }
+
+      dispatch(onSetOrderCreated(result.ok === true));
+    } catch (error) {
+      dispatch(onErrorOrderSlice((error as Error).message));
+    }
+  };
+
+  const ResetSave = () => dispatch(onResetSave());
+
   return {
     isLoadingOrderSlice,
     dataListOrderSlice,
+    orderCreated,
     errorMessageOrderSlice,
 
     GetOrderByFilters,
+    SaveOrder,
+    ResetSave,
   };
 };

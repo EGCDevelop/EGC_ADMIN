@@ -10,13 +10,15 @@ type OrderSliceDataList = {
 
 interface OrderSlice {
   isLoadingOrderSlice: boolean;
-  dataListOrderSlice?: OrderSliceDataList | undefined;
+  dataListOrderSlice?: OrderSliceDataList | null;
+  orderCreated: boolean;
   errorMessageOrderSlice?: string | undefined;
 }
 
 const initialState: OrderSlice = {
   isLoadingOrderSlice: false,
-  dataListOrderSlice: undefined,
+  dataListOrderSlice: null,
+  orderCreated: false,
   errorMessageOrderSlice: undefined,
 };
 
@@ -38,9 +40,20 @@ export const orderSlice = createSlice({
       state.errorMessageOrderSlice = undefined;
     },
 
+    onSetOrderCreated: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingOrderSlice = false;
+      state.orderCreated = action.payload;
+      state.errorMessageOrderSlice = undefined;
+    },
+
     onErrorOrderSlice: (state, action: PayloadAction<string | undefined>) => {
       state.isLoadingOrderSlice = false;
       state.errorMessageOrderSlice = action.payload;
+    },
+
+    onResetSave: (state) => {
+      state.isLoadingOrderSlice = false;
+      state.orderCreated = false;
     },
   },
 });
@@ -48,6 +61,8 @@ export const orderSlice = createSlice({
 export const {
   onLoadingOrderSlice,
   onSetDataListOrderSlice,
+  onSetOrderCreated,
   onErrorOrderSlice,
+  onResetSave,
 } = orderSlice.actions;
 export default orderSlice.reducer;

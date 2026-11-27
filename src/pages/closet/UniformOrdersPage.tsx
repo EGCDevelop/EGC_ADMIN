@@ -10,6 +10,15 @@ import { useOrderStore } from "../../hooks/useOrderStore";
 import UniformOrder from "../../interfaces/uniform/UniformOrder.types";
 import PaymentUtils from "../../utils/paymentUtils";
 import { CustomLoader } from "../components/CustomLoader";
+import CustomModal from "../components/CustomModal";
+import ErrorData from "../../interfaces/ErrorData.types";
+import { CustomAlert } from "../components/CustomAlert";
+import { useClosetStore } from "../../hooks/useClosetStore";
+import { getSquadId } from "../../utils/getSquadId";
+import ClosetDTO from "../../interfaces/DTOs/ClosetDTO.types";
+import { useAuthStore } from "../../hooks/useAuthStore";
+import UniformOrderDetails from "../../interfaces/uniform/UniformOrderDetails.types";
+import SaveOrdenDTO from "../../interfaces/DTOs/SaveOrdenDTO.types";
 
 interface DataSearch {
   orderPaymentState: number;
@@ -17,33 +26,43 @@ interface DataSearch {
 }
 
 export const UniformOrdersPage = () => {
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
 
   const {
     isLoadingOrderSlice,
     dataListOrderSlice,
+    orderCreated,
     errorMessageOrderSlice,
     GetOrderByFilters,
+    SaveOrder,
+    ResetSave,
   } = useOrderStore();
+
+  const {
+    isLoadingClosetSlice,
+    dtoDataListClosetSlice,
+    errorMessageClosetSlice,
+    GetClosetDto,
+  } = useClosetStore();
 
   const { formData, onSelectChange } = useForm<DataSearch>({
     orderPaymentState: 0,
     orderDeliveryState: 0,
   });
 
+  const [alert, setAlert] = useState<ErrorData | null>();
   const [showNewOrderForm, setShowNewOrderForm] = useState(false);
-  const [newOrderDescription, setNewOrderDescription] = useState("");
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [selectedItemIds, setSelectedItemIds] = useState<ClosetDTO[]>([]);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
 
   const openNewOrder = () => {
     setSelectedItemIds([]);
-    setNewOrderDescription("");
     setShowNewOrderForm(true);
   };
-  const toggleItem = (id: string) =>
+  const toggleItem = (id: ClosetDTO) =>
     setSelectedItemIds((current) =>
       current.includes(id)
         ? current.filter((itemId) => itemId !== id)
@@ -51,7 +70,43 @@ export const UniformOrdersPage = () => {
     );
 
   const createOrder = () => {
-    setNewOrderDescription("");
+    const grandTotal: number = selectedItemIds.reduce(
+      (sum, item) => sum + Number(item.price ?? 0),
+      0,
+    );
+
+    const dataOrder: UniformOrder = {
+      id: 0,
+      grandTotal: grandTotal,
+      amountPaid: 0,
+      amountPending: grandTotal,
+      memberId: Number(userId),
+      creationDate: new Date().toISOString(),
+      fullDeliveryDate: null,
+      instructorId: user!.id,
+      financialState: 1,
+      deliveryState: 1,
+    };
+
+    const orderDetails: UniformOrderDetails[] = selectedItemIds.map(
+      (item: ClosetDTO) => ({
+        id: 0,
+        orderId: 0,
+        uniformId: item.uniformId,
+        deliveryState: 1,
+        userDelivery: 0,
+        stateActive: 1,
+        deliveryDate: null,
+        deliveryReversalComments: null,
+      }),
+    );
+
+    const saveData: SaveOrdenDTO = {
+      uniform: dataOrder,
+      details: orderDetails,
+    };
+
+    SaveOrder(saveData);
     setShowNewOrderForm(false);
   };
 
@@ -67,11 +122,104 @@ export const UniformOrdersPage = () => {
       formData.orderPaymentState,
       formData.orderDeliveryState,
     );
-  }, [formData.orderPaymentState, formData.orderDeliveryState]);
+  }, [formData.orderPaymentState, formData.orderDeliveryState, orderCreated]);
+
+  useEffect(() => {
+    if (dataListOrderSlice?.member) {
+      const squad = getSquadId(dataListOrderSlice?.member.intescIdEscuadra);
+      GetClosetDto(Number(squad), dataListOrderSlice.member.escNombre);
+    }
+  }, [dataListOrderSlice]);
+
+  useEffect(() => {
+    if (errorMessageOrderSlice) {
+      setAlert({
+        title: "Error",
+        message: errorMessageOrderSlice,
+        status: "error",
+      });
+    }
+
+    if (errorMessageClosetSlice) {
+      setAlert({
+        title: "Error",
+        message: errorMessageClosetSlice,
+        status: "error",
+      });
+    }
+  }, [errorMessageOrderSlice, errorMessageClosetSlice]);
+
+  useEffect(() => {
+    if (orderCreated) {
+      setAlert({
+        title: "Exito",
+        message: "Pedido creado exitosamente",
+        status: "success",
+      });
+
+      setTimeout(() => {
+        ResetSave();
+      }, 4000);
+    }
+  }, [orderCreated]);
 
   return (
     <>
-      {isLoadingOrderSlice && <CustomLoader />}
+      {(isLoadingOrderSlice || isLoadingClosetSlice) && <CustomLoader />}
+      {alert && (
+        <CustomAlert
+          title={alert.title}
+          message={alert.message}
+          status={alert.status}
+          onClose={() => setAlert(null)}
+        />
+      )}
+      <CustomModal
+        title="Nuevo pedido"
+        size="small"
+        isOpen={showNewOrderForm}
+        onClose={() => setShowNewOrderForm(false)}
+      >
+        <p className={styles.modalText}>
+          Se creará un pedido independiente para{" "}
+          <b>
+            {dataListOrderSlice?.member.intNombres}{" "}
+            {dataListOrderSlice?.member.intApellidos}.
+          </b>
+        </p>
+        <div className={styles.checklist}>
+          {dtoDataListClosetSlice.map((item: ClosetDTO) => {
+            return (
+              <label key={item.id} className={styles.checkRow}>
+                <span>
+                  {item.name} · Q{item.price.toFixed(2)}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={selectedItemIds.includes(item)}
+                  onChange={() => toggleItem(item)}
+                />
+              </label>
+            );
+          })}
+        </div>
+        <div className={styles.modalActions}>
+          <button
+            type="button"
+            className={`${styles.button} ${styles.buttonOutline}`}
+            onClick={() => setShowNewOrderForm(false)}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className={`${styles.button} ${styles.buttonPrimary}`}
+            onClick={createOrder}
+          >
+            Crear pedido
+          </button>
+        </div>
+      </CustomModal>
       <main className={styles.page}>
         <header className={styles.header}>
           <div>
@@ -97,15 +245,6 @@ export const UniformOrdersPage = () => {
           </button>
         </header>
 
-        <section className={styles.stats}>
-          {/* {stats.map((card) => (
-          <div key={card.label} className={styles.statCard}>
-            <p className={styles.statLabel}>{card.label}</p>
-            <p className={styles.statValue}>{card.value}</p>
-          </div>
-        ))} */}
-        </section>
-
         <section className={styles.filters}>
           <div className={styles.filtersGrid}>
             <CustomSelect
@@ -130,8 +269,8 @@ export const UniformOrdersPage = () => {
         </section>
 
         <section className={styles.orders}>
-          {dataListOrderSlice!.data.length > 0 ? (
-            dataListOrderSlice!.data.map((item: UniformOrder) => {
+          {dataListOrderSlice !== null && dataListOrderSlice?.data.length ? (
+            dataListOrderSlice?.data.map((item: UniformOrder) => {
               return (
                 <article key={item.id} className={styles.card}>
                   <div className={styles.cardTop}>
@@ -235,55 +374,6 @@ export const UniformOrdersPage = () => {
             </button>
           </div>
         </footer>
-
-        {/* Modal: nuevo pedido */}
-        {/* {showNewOrderForm && (
-        <div className={styles.overlay}>
-          <div className={styles.modal}>
-            <h2 className={styles.modalTitle}>Nuevo pedido</h2>
-            <p className={styles.modalText}>
-              Se creará un pedido independiente para {selectedUser.Nombres}{" "}
-              {selectedUser.Apellidos}.
-            </p>
-            <input
-              className={`${styles.input} ${styles.inputSpaced}`}
-              placeholder="Descripción opcional"
-              value={newOrderDescription}
-              onChange={(event) => setNewOrderDescription(event.target.value)}
-            />
-            <div className={styles.checklist}>
-              {MOCK_CATALOG.map((item) => (
-                <label key={item.id} className={styles.checkRow}>
-                  <span>
-                    {item.name} · Q{item.price.toFixed(2)}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={selectedItemIds.includes(item.id)}
-                    onChange={() => toggleItem(item.id)}
-                  />
-                </label>
-              ))}
-            </div>
-            <div className={styles.modalActions}>
-              <button
-                type="button"
-                className={`${styles.button} ${styles.buttonOutline}`}
-                onClick={() => setShowNewOrderForm(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className={`${styles.button} ${styles.buttonPrimary}`}
-                onClick={createOrder}
-              >
-                Crear pedido
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
 
         {/* Modal: cancelar pedido */}
         {/* {cancelId && (
